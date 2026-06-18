@@ -6,7 +6,6 @@ import pygame
 from car import ACCEL, ROTATE_SPEED, Car
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
-HIGHSCORE_PATH = Path(__file__).resolve().parent / "highscore.txt"
 FPS = 30
 SPAWN_X, SPAWN_Y, SPAWN_ANGLE = 120, 480, 180
 
@@ -20,17 +19,6 @@ DEFAULT_GEAR = 1
 GEAR_BUTTON_SIZE = (50, 40)
 GEAR_BUTTON_GAP = 10
 GEAR_BUTTON_TOP_RIGHT_MARGIN = 20
-
-
-def load_high_score():
-    try:
-        return int(HIGHSCORE_PATH.read_text().strip())
-    except (FileNotFoundError, ValueError):
-        return 0
-
-
-def save_high_score(value):
-    HIGHSCORE_PATH.write_text(str(value))
 
 
 def run():
@@ -59,7 +47,7 @@ def run():
     car.set_max_speed(GEARS[current_gear][1])
 
     score = 0
-    high_score = load_high_score()
+    high_score = 0  # resets to 0 every time the game is launched
     armed = False  # car has left the finish line and is eligible to arm a new lap
     checkpoint_passed = False  # car has reached the far-side checkpoint this lap
     message = ""
@@ -69,7 +57,6 @@ def run():
         nonlocal high_score
         if score > high_score:
             high_score = score
-            save_high_score(high_score)
 
     running = True
     while running:

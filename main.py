@@ -10,7 +10,13 @@ FPS = 30
 SPAWN_X, SPAWN_Y, SPAWN_ANGLE = 120, 480, 180
 
 FINISH_RECT = pygame.Rect(60, 428, 135, 26)
-CHECKPOINT_RECT = pygame.Rect(1410, 310, 80, 80)
+# must be touched in this order (CP1 -> CP2 -> CP3) to force clockwise laps;
+# driving the wrong way hits them in reverse order and never advances
+CHECKPOINTS = [
+    pygame.Rect(710, 210, 80, 80),
+    pygame.Rect(1410, 310, 80, 80),
+    pygame.Rect(660, 780, 80, 80),
+]
 FINISH_LEAVE_DISTANCE = 200  # must get this far from the line before a lap can arm
 MESSAGE_FRAMES = FPS  # how long the "+1 Lap!" / "Crashed!" message stays on screen
 
@@ -49,7 +55,7 @@ def run():
     score = 0
     high_score = 0  # resets to 0 every time the game is launched
     armed = False  # car has left the finish line and is eligible to arm a new lap
-    checkpoint_passed = False  # car has reached the far-side checkpoint this lap
+    next_checkpoint = 0  # how many of CHECKPOINTS have been touched in order so far
     message = ""
     message_timer = 0
 
@@ -87,28 +93,27 @@ def run():
             register_score_if_record()
             score = 0
             armed = False
-            checkpoint_passed = False
+            next_checkpoint = 0
             message, message_timer = "Crashed!", MESSAGE_FRAMES
             car.reset(SPAWN_X, SPAWN_Y, SPAWN_ANGLE)
 
         on_finish_line = FINISH_RECT.collidepoint(car.x, car.y)
-        on_checkpoint = CHECKPOINT_RECT.collidepoint(car.x, car.y)
         distance_from_finish = math.hypot(
             car.x - FINISH_RECT.centerx, car.y - FINISH_RECT.centery
         )
 
         if not armed and distance_from_finish > FINISH_LEAVE_DISTANCE:
             armed = True
-            checkpoint_passed = False
+            next_checkpoint = 0
 
-        if armed and on_checkpoint:
-            checkpoint_passed = True
+        if armed and next_checkpoint < len(CHECKPOINTS) and CHECKPOINTS[next_checkpoint].collidepoint(car.x, car.y):
+            next_checkpoint += 1
 
-        if armed and checkpoint_passed and on_finish_line:
+        if armed and next_checkpoint == len(CHECKPOINTS) and on_finish_line:
             score += 1
             register_score_if_record()
             armed = False
-            checkpoint_passed = False
+            next_checkpoint = 0
             message, message_timer = "+1 Lap!", MESSAGE_FRAMES
 
         screen.blit(track_front, (0, 0))

@@ -3,19 +3,19 @@ from pathlib import Path
 
 import pygame
 
-from car import Car
+from car import ACCEL, ROTATE_SPEED, Car
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 HIGHSCORE_PATH = Path(__file__).resolve().parent / "highscore.txt"
 FPS = 30
-SPAWN_X, SPAWN_Y = 120, 480
+SPAWN_X, SPAWN_Y, SPAWN_ANGLE = 120, 480, 180
 
 FINISH_RECT = pygame.Rect(60, 428, 135, 26)
 CHECKPOINT_RECT = pygame.Rect(1410, 310, 80, 80)
 FINISH_LEAVE_DISTANCE = 200  # must get this far from the line before a lap can arm
 MESSAGE_FRAMES = FPS  # how long the "+1 Lap!" / "Crashed!" message stays on screen
 
-GEARS = [("1", 3), ("2", 5), ("3", 8)]  # (button label, speed)
+GEARS = [("1", 4), ("2", 7), ("3", 10)]  # (button label, max speed)
 DEFAULT_GEAR = 1
 GEAR_BUTTON_SIZE = (50, 40)
 GEAR_BUTTON_GAP = 10
@@ -41,7 +41,7 @@ def run():
     car_image = pygame.image.load(ASSETS_DIR / "car.png")
 
     screen = pygame.display.set_mode(track_front.get_size())
-    pygame.display.set_caption("WASD Car")
+    pygame.display.set_caption("Car Game (W/S Accel, J/K Steer)")
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 36)
 
@@ -54,9 +54,9 @@ def run():
         for i in range(len(GEARS))
     ]
 
-    car = Car(SPAWN_X, SPAWN_Y)
+    car = Car(SPAWN_X, SPAWN_Y, SPAWN_ANGLE)
     current_gear = DEFAULT_GEAR
-    car.set_speed(GEARS[current_gear][1])
+    car.set_max_speed(GEARS[current_gear][1])
 
     score = 0
     high_score = load_high_score()
@@ -80,13 +80,21 @@ def run():
                 for i, rect in enumerate(gear_buttons):
                     if rect.collidepoint(event.pos):
                         current_gear = i
-                        car.set_speed(GEARS[current_gear][1])
+                        car.set_max_speed(GEARS[current_gear][1])
                         break
 
         keys = pygame.key.get_pressed()
-        dx = keys[pygame.K_d] - keys[pygame.K_a]
-        dy = keys[pygame.K_s] - keys[pygame.K_w]
-        car.move(dx, dy)
+        if keys[pygame.K_w]:
+            car.set_accel(ACCEL)
+        elif keys[pygame.K_s]:
+            car.set_accel(-ACCEL)
+        else:
+            car.set_accel(0)
+        if keys[pygame.K_j]:
+            car.rotate(-ROTATE_SPEED)
+        if keys[pygame.K_k]:
+            car.rotate(ROTATE_SPEED)
+        car.update()
 
         if car.collision(track_back):
             register_score_if_record()
@@ -94,7 +102,7 @@ def run():
             armed = False
             checkpoint_passed = False
             message, message_timer = "Crashed!", MESSAGE_FRAMES
-            car.reset(SPAWN_X, SPAWN_Y)
+            car.reset(SPAWN_X, SPAWN_Y, SPAWN_ANGLE)
 
         on_finish_line = FINISH_RECT.collidepoint(car.x, car.y)
         on_checkpoint = CHECKPOINT_RECT.collidepoint(car.x, car.y)

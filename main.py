@@ -1,30 +1,13 @@
-import math
 from pathlib import Path
 
 import pygame
 
 from car import ACCEL, ROTATE_SPEED, Car
+from race import GearButtons, RaceState
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 FPS = 30
 SPAWN_X, SPAWN_Y, SPAWN_ANGLE = 120, 480, 180
-
-FINISH_RECT = pygame.Rect(60, 428, 135, 26)
-# must be touched in this order (CP1 -> CP2 -> CP3) to force clockwise laps;
-# driving the wrong way hits them in reverse order and never advances
-CHECKPOINTS = [
-    pygame.Rect(710, 210, 80, 80),
-    pygame.Rect(1410, 310, 80, 80),
-    pygame.Rect(660, 780, 80, 80),
-]
-FINISH_LEAVE_DISTANCE = 200  # must get this far from the line before a lap can arm
-MESSAGE_FRAMES = FPS  # how long the "+1 Lap!" / "Crashed!" message stays on screen
-
-GEARS = [("1", 4), ("2", 7), ("3", 10)]  # (button label, max speed)
-DEFAULT_GEAR = 1
-GEAR_BUTTON_SIZE = (50, 40)
-GEAR_BUTTON_GAP = 10
-GEAR_BUTTON_TOP_RIGHT_MARGIN = 20
 
 
 def run():
@@ -39,30 +22,10 @@ def run():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 36)
 
-    screen_width, _ = track_front.get_size()
-    button_w, button_h = GEAR_BUTTON_SIZE
-    buttons_right_edge = screen_width - GEAR_BUTTON_TOP_RIGHT_MARGIN
-    buttons_left_edge = buttons_right_edge - len(GEARS) * button_w - (len(GEARS) - 1) * GEAR_BUTTON_GAP
-    gear_buttons = [
-        pygame.Rect(buttons_left_edge + i * (button_w + GEAR_BUTTON_GAP), 20, button_w, button_h)
-        for i in range(len(GEARS))
-    ]
-
     car = Car(SPAWN_X, SPAWN_Y, SPAWN_ANGLE)
-    current_gear = DEFAULT_GEAR
-    car.set_max_speed(GEARS[current_gear][1])
-
-    score = 0
-    high_score = 0  # resets to 0 every time the game is launched
-    armed = False  # car has left the finish line and is eligible to arm a new lap
-    next_checkpoint = 0  # how many of CHECKPOINTS have been touched in order so far
-    message = ""
-    message_timer = 0
-
-    def register_score_if_record():
-        nonlocal high_score
-        if score > high_score:
-            high_score = score
+    gear_buttons = GearButtons(screen.get_width())
+    car.set_max_speed(gear_buttons.current_speed())
+    race = RaceState()
 
     running = True
     while running:
@@ -70,11 +33,9 @@ def run():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                for i, rect in enumerate(gear_buttons):
-                    if rect.collidepoint(event.pos):
-                        current_gear = i
-                        car.set_max_speed(GEARS[current_gear][1])
-                        break
+                new_speed = gear_buttons.handle_click(event.pos)
+                if new_speed is not None:
+                    car.set_max_speed(new_speed)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -90,50 +51,15 @@ def run():
         car.update()
 
         if car.collision(track_back):
-            register_score_if_record()
-            score = 0
-            armed = False
-            next_checkpoint = 0
-            message, message_timer = "Crashed!", MESSAGE_FRAMES
+            race.handle_crash()
             car.reset(SPAWN_X, SPAWN_Y, SPAWN_ANGLE)
 
-        on_finish_line = FINISH_RECT.collidepoint(car.x, car.y)
-        distance_from_finish = math.hypot(
-            car.x - FINISH_RECT.centerx, car.y - FINISH_RECT.centery
-        )
-
-        if not armed and distance_from_finish > FINISH_LEAVE_DISTANCE:
-            armed = True
-            next_checkpoint = 0
-
-        if armed and next_checkpoint < len(CHECKPOINTS) and CHECKPOINTS[next_checkpoint].collidepoint(car.x, car.y):
-            next_checkpoint += 1
-
-        if armed and next_checkpoint == len(CHECKPOINTS) and on_finish_line:
-            score += 1
-            register_score_if_record()
-            armed = False
-            next_checkpoint = 0
-            message, message_timer = "+1 Lap!", MESSAGE_FRAMES
+        race.update(car)
 
         screen.blit(track_front, (0, 0))
         car.draw(screen, car_image)
-
-        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
-        high_score_text = font.render(f"Best: {high_score}", True, (255, 255, 255))
-        screen.blit(score_text, (20, 20))
-        screen.blit(high_score_text, (20, 56))
-        if message_timer > 0:
-            message_text = font.render(message, True, (255, 220, 0))
-            screen.blit(message_text, (20, 92))
-            message_timer -= 1
-
-        for i, rect in enumerate(gear_buttons):
-            selected = i == current_gear
-            pygame.draw.rect(screen, (255, 220, 0) if selected else (40, 40, 40), rect)
-            pygame.draw.rect(screen, (255, 255, 255), rect, 2)
-            label_text = font.render(GEARS[i][0], True, (0, 0, 0) if selected else (255, 255, 255))
-            screen.blit(label_text, label_text.get_rect(center=rect.center))
+        race.draw(screen, font)
+        gear_buttons.draw(screen, font)
 
         pygame.display.flip()
 

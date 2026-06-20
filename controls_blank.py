@@ -34,6 +34,13 @@ def handle_movement(keys, car):
     """
     # Q2 begin
     pass
+    # 參考答案：
+    # if keys[pygame.K_w]:
+    #     car.set_accel(ACCEL)
+    # elif keys[pygame.K_s]:
+    #     car.set_accel(-ACCEL)
+    # else:
+    #     car.set_accel(0)
     # Q2 end
 
     """
@@ -46,4 +53,9 @@ def handle_movement(keys, car):
     """
     # Q3 begin
     pass
+    # 參考答案：
+    # if keys[pygame.K_j]:
+    #     car.rotate(-ROTATE_SPEED)
+    # if keys[pygame.K_k]:
+    #     car.rotate(ROTATE_SPEED)
     # Q3 end

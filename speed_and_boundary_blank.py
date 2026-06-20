@@ -65,6 +65,12 @@ class GearButtons:
         """
         # Q4 begin
         pass
+        # 參考答案：
+        # for i, rect in enumerate(self.rects):
+        #     if rect.collidepoint(pos):
+        #         self.current_gear = i
+        #         return self.current_speed()
+        # return None
         # Q4 end
 
     def draw(self, screen, font):
@@ -106,4 +112,11 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     """
     # Q5 begin
     pass
+    # 參考答案：
+    # if car.collision(track_back):
+    #     state.score = 0
+    #     state.armed = False
+    #     state.next_checkpoint = 0
+    #     state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES
+    #     car.reset(spawn_x, spawn_y, spawn_angle)
     # Q5 end

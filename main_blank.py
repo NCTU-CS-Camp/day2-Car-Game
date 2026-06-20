@@ -45,6 +45,10 @@ def run():
     track_front = "__fill_in__"
     track_back = "__fill_in__"
     car_image = "__fill_in__"
+    # 參考答案：
+    # track_front = pygame.image.load(ASSETS_DIR / "track_front.png")
+    # track_back = pygame.image.load(ASSETS_DIR / "track_back.png")
+    # car_image = pygame.image.load(ASSETS_DIR / "car.png")
     # Q1 end
 
     screen = pygame.display.set_mode(track_front.get_size())

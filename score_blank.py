@@ -85,6 +85,23 @@ def update_lap_progress(car, state):
     """
     # Q6 begin
     pass
+    # 參考答案：
+    # if not state.armed and distance_from_finish > FINISH_LEAVE_DISTANCE:
+    #     state.armed = True
+    #     state.next_checkpoint = 0
+    #
+    # if (
+    #     state.armed
+    #     and state.next_checkpoint < len(CHECKPOINTS)
+    #     and CHECKPOINTS[state.next_checkpoint].collidepoint(car.x, car.y)
+    # ):
+    #     state.next_checkpoint += 1
+    #
+    # if state.armed and state.next_checkpoint == len(CHECKPOINTS) and on_finish_line:
+    #     state.score += 1
+    #     state.armed = False
+    #     state.next_checkpoint = 0
+    #     state.message, state.message_timer = "+1 Lap!", MESSAGE_FRAMES
     # Q6 end
 
 
@@ -109,4 +126,7 @@ def update_high_score(state):
     """
     # Q7 begin
     pass
+    # 參考答案：
+    # if state.score > state.high_score:
+    #     state.high_score = state.score
     # Q7 end

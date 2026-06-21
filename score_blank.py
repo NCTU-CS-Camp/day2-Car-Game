@@ -4,8 +4,6 @@
 --------------------------------------------------------
 """
 
-import math
-
 import pygame
 
 FINISH_RECT = pygame.Rect(60, 428, 135, 26)
@@ -15,7 +13,6 @@ CHECKPOINTS = [
     pygame.Rect(1410, 310, 80, 80),
     pygame.Rect(660, 780, 80, 80),
 ]
-FINISH_LEAVE_DISTANCE = 200  # 要先離終點線這麼遠，這一圈才算「出發」
 MESSAGE_FRAMES = 30  # "+1 Lap!" 訊息要停留幾個 frame
 
 
@@ -27,8 +24,7 @@ class GameState:
     #### 屬性
     - score : 目前這次的分數
     - high_score : 這次執行期間的最高分
-    - armed : 車子是否已經離終點夠遠，這一圈可以開始計分
-    - next_checkpoint : 接下來該踩 CHECKPOINTS 的第幾個(0~3)
+    - checkpoints_passed : CP1、CP2、CP3 是否已依序通過
     - message / message_timer : 畫面上顯示的提示文字跟剩餘 frame 數
     --------------------------------------------------------
     """
@@ -36,8 +32,7 @@ class GameState:
     def __init__(self):
         self.score = 0
         self.high_score = 0
-        self.armed = False
-        self.next_checkpoint = 0
+        self.checkpoints_passed = [False, False, False]
         self.message = ""
         self.message_timer = 0
 
@@ -56,53 +51,118 @@ def update_lap_progress(car, state):
     --------------------------------------------------------
     """
     on_finish_line = FINISH_RECT.collidepoint(car.x, car.y)
-    distance_from_finish = math.hypot(
-        car.x - FINISH_RECT.centerx, car.y - FINISH_RECT.centery
-    )
+    on_checkpoint_1 = CHECKPOINTS[0].collidepoint(car.x, car.y)
+    on_checkpoint_2 = CHECKPOINTS[1].collidepoint(car.x, car.y)
+    on_checkpoint_3 = CHECKPOINTS[2].collidepoint(car.x, car.y)
 
     """
     --------------------------------------------------------
-    Q6. 完成「順向繞完一圈才能加分」的規則
-    Todo : 賽道上有 3 個檢查點 CHECKPOINTS = [CP1, CP2, CP3]，車子必須按照
-           CP1 -> CP2 -> CP3 的順序依序踩到，最後回到終點才算一圈；
-           逆向繞圈會先踩到 CP3，順序不對就不會被記分。
-           state.next_checkpoint 記錄「接下來該踩第幾個」(0 代表還沒踩過任何一個，
-           3 代表三個都踩過了)。寫出三段判斷(三個獨立的 if，依序寫下來)：
-           1. 如果 state.armed 還是 False，而且 distance_from_finish > FINISH_LEAVE_DISTANCE，
-              就把 state.armed 設成 True，state.next_checkpoint 設成 0
-              (代表車子已經離終點夠遠，這一圈正式出發)
-           2. 如果 state.armed 是 True，而且 state.next_checkpoint 還沒到 3，而且車子目前
-              的位置在 CHECKPOINTS[state.next_checkpoint] 的範圍內，
-              就把 state.next_checkpoint 加 1(代表踩到了「接下來該踩的那個」檢查點)
-           3. 如果 state.armed 是 True，而且 state.next_checkpoint 已經等於 3，而且
-              on_finish_line 是 True，代表順向繞完一圈：state.score += 1，
-              state.armed 設回 False，state.next_checkpoint 設回 0，
-              並把 state.message 設成 "+1 Lap!"，state.message_timer 設成 MESSAGE_FRAMES
-    Hint : CHECKPOINTS 是一個裝了 3 個 pygame.Rect 的 list，
-           用 CHECKPOINTS[state.next_checkpoint] 就可以拿到「現在該踩的那一個」，
-           跟判斷滑鼠點到哪個按鈕一樣可以用 .collidepoint(car.x, car.y)
+    Q6-1. 處理車子通過 CP1
+    Todo : 如果車子位於 CP1：
+           1. CP2 已通過時，代表車子從 CP2 逆向回到 CP1，
+              將 CP2 改為尚未通過。
+           2. 否則，只有三個 checkpoint 都尚未通過時，
+              才把 CP1 設為已通過。
+    Hint : 
+           1. CP1、CP2 分別是 state.checkpoints_passed[0]、[1]。
+           2. 可以用 any(state.checkpoints_passed) 來判斷是否已有任一 checkpoint 通過。
     --------------------------------------------------------
     """
-    # Q6 begin
-    pass
-    # 參考答案：
-    # if not state.armed and distance_from_finish > FINISH_LEAVE_DISTANCE:
-    #     state.armed = True
-    #     state.next_checkpoint = 0
-    #
+    # Q6-1 begin
+    if on_checkpoint_1:
+        if "__fill_in__":
+            state.checkpoints_passed[1] = False
+        elif "__fill_in__":
+            state.checkpoints_passed[0] = True
+    # Q6-1 end
+
+    # Q6-1 answer:
+    # if on_checkpoint_1:
+    #     if state.checkpoints_passed[1]:
+    #         state.checkpoints_passed[1] = False
+    #     elif not any(state.checkpoints_passed):
+    #         state.checkpoints_passed[0] = True
+
+    """
+    --------------------------------------------------------
+    Q6-2. 處理車子通過 CP2
+    Todo : 如果車子位於 CP2：
+           1. CP3 已通過時，代表車子從 CP3 逆向回到 CP2，
+              將 CP3 改為尚未通過。
+           2. 否則，只有 CP1 已通過且 CP2 尚未通過時，
+              才把 CP2 設為已通過。
+    Hint : 
+           1. CP1、CP2、CP3 分別是 state.checkpoints_passed[0]、[1]、[2]。
+           2. 
+    --------------------------------------------------------
+    """
+    # Q6-2 begin
+    if on_checkpoint_2:
+        if "__fill_in__":
+            state.checkpoints_passed[2] = False
+        elif "__fill_in__" and "__fill_in__":
+            state.checkpoints_passed[1] = True
+    # Q6-2 end
+
+    # Q6-2 answer:
+    # if on_checkpoint_2:
+    #     if state.checkpoints_passed[2]:
+    #         state.checkpoints_passed[2] = False
+    #     elif state.checkpoints_passed[0] and not state.checkpoints_passed[1]:
+    #         state.checkpoints_passed[1] = True
+
+    """
+    --------------------------------------------------------
+    Q6-3. 處理車子通過 CP3
+    Todo : 車子位於 CP3，而且 CP2 已通過、CP3 尚未通過時，
+           將 CP3 設為已通過。
+    Hint : 
+           1. CP2、CP3 分別是 state.checkpoints_passed[1]、[2]。
+    --------------------------------------------------------
+    """
+    # Q6-3 begin
+    if (
+        on_checkpoint_3
+        and "__fill_in__"
+        and "__fill_in__"
+    ):
+        state.checkpoints_passed[2] = True
+    # Q6-3 end
+
+    # Q6-3 answer:
     # if (
-    #     state.armed
-    #     and state.next_checkpoint < len(CHECKPOINTS)
-    #     and CHECKPOINTS[state.next_checkpoint].collidepoint(car.x, car.y)
+    #     on_checkpoint_3
+    #     and state.checkpoints_passed[1]
+    #     and not state.checkpoints_passed[2]
     # ):
-    #     state.next_checkpoint += 1
-    #
-    # if state.armed and state.next_checkpoint == len(CHECKPOINTS) and on_finish_line:
+    #     state.checkpoints_passed[2] = True
+
+    """
+    --------------------------------------------------------
+    Q6-4. 處理車子完成一圈
+    Todo : 車子位於終點，而且 CP3 已通過時：
+           1. 將 state.score 加 1。
+           2. 將三個 checkpoint 全部重設為尚未通過。
+           3. 將 state.message 設成 "+1 Lap!"。
+           4. 將 state.message_timer 設成 MESSAGE_FRAMES。
+    Hint : 使用 on_finish_line 和 state.checkpoints_passed[2] 判斷。
+           可以用 [False, False, False] 重設所有 checkpoint。
+    --------------------------------------------------------
+    """
+    # Q6-4 begin
+    if on_finish_line and "__fill_in__":
+        state.score += 1
+        state.checkpoints_passed = [False, False, False]
+        state.message = "+1 Lap!"
+        state.message_timer = MESSAGE_FRAMES
+    # Q6-4 end
+
+    # Q6-4 answer:
+    # if on_finish_line and state.checkpoints_passed[2]:
     #     state.score += 1
-    #     state.armed = False
-    #     state.next_checkpoint = 0
-    #     state.message, state.message_timer = "+1 Lap!", MESSAGE_FRAMES
-    # Q6 end
+    #     state.checkpoints_passed = [False, False, False]
+    #     state.message = "+1 Lap!"
+    #     state.message_timer = MESSAGE_FRAMES
 
 
 def update_high_score(state):

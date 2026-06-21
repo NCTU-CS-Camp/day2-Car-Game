@@ -59,12 +59,12 @@ class GearButtons:
                把 self.current_gear 換成那個編號，
                並回傳新的速度(self.current_speed())。
                如果沒有點到任何按鈕，要回傳 None
-        Hint : 用 for i, rect in enumerate(self.rects): 把每個按鈕跑一遍
-               用 rect.collidepoint(pos) 判斷滑鼠是不是點在這個按鈕裡面
+        Hint : 用 for i in range(len(self.rects)): 把每個按鈕的編號跑一遍
+               用 self.rects[i].collidepoint(pos) 判斷滑鼠是不是點在這個按鈕裡面
         --------------------------------------------------------
         """
         # Q4 begin
-        for i, rect in enumerate(self.rects):
+        for i in range(len(self.rects)):
             if "__fill_in__":
                 self.current_gear = "__fill_in__"
                 return "__fill_in__"

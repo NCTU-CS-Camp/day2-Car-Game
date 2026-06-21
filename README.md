@@ -32,9 +32,8 @@ python3 main.py
 
 ```text
 main.py                       進入點，把所有東西串在一起(讀圖、建立物件、主迴圈)
-car.py                        Car 物件：油門/轉向/碰撞偵測等物理引擎
+car.py                        Car 物件：油門/轉向/碰撞偵測等物理引擎(含 move()/rotation() 數學輔助函式)
 race.py                       比賽規則(終點線/檢查點/分數/最高分)跟變速按鈕 UI
-geometry.py                   move()/rotation() 數學輔助函式
 assets/                       車子與賽道圖片
 ```
 

@@ -2,13 +2,28 @@ import math
 
 import pygame
 
-from geometry import move, rotation
-
 DEFAULT_MAX_SPEED = 10
 ACCEL = 0.2
 ROTATE_SPEED = 5
 FRICTION = 0.92
 
+def rotation(origin, point, angle):
+    ox, oy = origin
+    px, py = point
+
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    return qx, qy
+
+
+def move(point, angle, unit):
+    x, y = point
+    rad = math.radians(-angle % 360)
+
+    x += unit * math.sin(rad)
+    y += unit * math.cos(rad)
+
+    return x, y
 
 class Car:
     def __init__(self, x=120, y=480, angle=180):

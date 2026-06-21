@@ -88,7 +88,7 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     #### 參數
     - car : 車子物件
     - track_back : 賽道碰撞用的底圖
-    - state : GameState 物件(記錄 score / armed / next_checkpoint / message / message_timer)
+    - state : GameState 物件(記錄 score / checkpoints_passed / message / message_timer)
     - spawn_x, spawn_y, spawn_angle : 車子重生時的座標跟角度
     --------------------------------------------------------
     #### 回傳值
@@ -101,7 +101,7 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     Todo : 呼叫 car.collision(track_back) 檢查車子是不是撞到賽道外。
            如果撞到了：
              1. 把 state.score 設成 0
-             2. 把 state.armed 設成 False，state.next_checkpoint 設成 0
+             2. 把 state.checkpoints_passed 設成 [False, False, False]
              3. 把 state.message 設成 "Crashed!"，state.message_timer 設成 MESSAGE_FRAMES
              4. 呼叫 car.reset(spawn_x, spawn_y, spawn_angle) 讓車子回到起點
     Hint : car.collision(track_back) 會回傳 True 或 False，
@@ -111,8 +111,7 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     # Q5 begin
     if car.collision("__fill_in__"):
         state.score = "__fill_in__"
-        state.armed = "__fill_in__"
-        state.next_checkpoint = "__fill_in__"
+        state.checkpoints_passed = "__fill_in__"
         state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES
         car.reset(spawn_x, spawn_y, spawn_angle)
     # Q5 end

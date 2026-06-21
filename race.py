@@ -4,8 +4,6 @@
 --------------------------------------------------------
 """
 
-import math
-
 import pygame
 
 FINISH_RECT = pygame.Rect(60, 428, 135, 26)
@@ -15,7 +13,6 @@ CHECKPOINTS = [
     pygame.Rect(1410, 310, 80, 80),
     pygame.Rect(660, 780, 80, 80),
 ]
-FINISH_LEAVE_DISTANCE = 200  # 要先離終點線這麼遠，這一圈才算「出發」
 MESSAGE_FRAMES = 30  # "+1 Lap!" / "Crashed!" 訊息要停留幾個 frame
 
 GEARS = [("1", 4), ("2", 7), ("3", 10)]  # (按鈕文字, 最高速度)
@@ -38,16 +35,14 @@ class RaceState:
     #### 屬性
     - score : 目前這次的分數
     - high_score : 這次執行期間的最高分
-    - armed : 車子是否已經離終點夠遠，這一圈可以開始計分
-    - next_checkpoint : 接下來該踩 CHECKPOINTS 的第幾個
+    - checkpoints_passed : CP1、CP2、CP3 是否已依序通過
     --------------------------------------------------------
     """
 
     def __init__(self):
         self.score = 0
         self.high_score = 0
-        self.armed = False
-        self.next_checkpoint = 0
+        self.checkpoints_passed = [False, False, False]
         self.message = ""
         self.message_timer = 0
 
@@ -58,31 +53,38 @@ class RaceState:
     def handle_crash(self):
         self._register_high_score()
         self.score = 0
-        self.armed = False
-        self.next_checkpoint = 0
+        self.checkpoints_passed = [False, False, False]
         self.message, self.message_timer = "Crashed!", MESSAGE_FRAMES
 
     def update(self, car):
         on_finish_line = FINISH_RECT.collidepoint(car.x, car.y)
-        distance_from_finish = math.hypot(
-            car.x - FINISH_RECT.centerx, car.y - FINISH_RECT.centery
-        )
+        on_checkpoint_1 = CHECKPOINTS[0].collidepoint(car.x, car.y)
+        on_checkpoint_2 = CHECKPOINTS[1].collidepoint(car.x, car.y)
+        on_checkpoint_3 = CHECKPOINTS[2].collidepoint(car.x, car.y)
 
-        if not self.armed and distance_from_finish > FINISH_LEAVE_DISTANCE:
-            self.armed = True
-            self.next_checkpoint = 0
+        if on_checkpoint_1:
+            if self.checkpoints_passed[1]:
+                self.checkpoints_passed[1] = False
+            elif not any(self.checkpoints_passed):
+                self.checkpoints_passed[0] = True
 
-        next_checkpoint_rect = (
-            CHECKPOINTS[self.next_checkpoint] if self.next_checkpoint < len(CHECKPOINTS) else None
-        )
-        if self.armed and next_checkpoint_rect and next_checkpoint_rect.collidepoint(car.x, car.y):
-            self.next_checkpoint += 1
+        if on_checkpoint_2:
+            if self.checkpoints_passed[2]:
+                self.checkpoints_passed[2] = False
+            elif self.checkpoints_passed[0] and not self.checkpoints_passed[1]:
+                self.checkpoints_passed[1] = True
 
-        if self.armed and self.next_checkpoint == len(CHECKPOINTS) and on_finish_line:
+        if (
+            on_checkpoint_3
+            and self.checkpoints_passed[1]
+            and not self.checkpoints_passed[2]
+        ):
+            self.checkpoints_passed[2] = True
+
+        if on_finish_line and self.checkpoints_passed[2]:
             self.score += 1
             self._register_high_score()
-            self.armed = False
-            self.next_checkpoint = 0
+            self.checkpoints_passed = [False, False, False]
             self.message, self.message_timer = "+1 Lap!", MESSAGE_FRAMES
 
     def draw(self, screen, font):

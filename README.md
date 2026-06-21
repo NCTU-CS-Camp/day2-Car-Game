@@ -4,11 +4,16 @@
 
 ## 執行方式
 
-需要先裝好 `pygame`：
+先同步專案依賴（第一次執行時會自動建立 `.venv`）：
 
 ```bash
-pip install pygame
-python3 main.py
+uv sync
+```
+
+啟動遊戲：
+
+```bash
+uv run python main.py
 ```
 
 ## 操作方式
@@ -42,7 +47,7 @@ assets/                       車子與賽道圖片
 如果想練習自己刻一遍這個遊戲的邏輯，可以參考挖空版本，裡面把判斷邏輯挖空，每個挖空都有 `Todo`/`Hint` 說明：
 
 ```bash
-python3 main_blank.py
+uv run python main_blank.py
 ```
 
 填完所有空格後，玩起來應該要跟 `main.py` 一樣。題目分散在不同檔案，每個檔案裡相關的題目放在一起：

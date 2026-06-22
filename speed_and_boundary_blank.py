@@ -1,6 +1,6 @@
 """
 --------------------------------------------------------
-#### 這個檔案負責「滑鼠變速按鈕」跟「撞到賽道邊界」(Q4、Q5)
+#### 這個檔案負責「滑鼠變速按鈕」跟「撞到賽道邊界」(Q6、Q7)
 --------------------------------------------------------
 """
 
@@ -54,7 +54,7 @@ class GearButtons:
         """
         """
         --------------------------------------------------------
-        Q4. 完成滑鼠點擊變速按鈕的判斷
+        Q6. 完成滑鼠點擊變速按鈕的判斷
         Todo : 找出滑鼠點到了 self.rects 裡的第幾個按鈕，
                把 self.current_gear 換成那個編號，
                並回傳新的速度(self.current_speed())。
@@ -63,13 +63,13 @@ class GearButtons:
                用 self.rects[i].collidepoint(pos) 判斷滑鼠是不是點在這個按鈕裡面
         --------------------------------------------------------
         """
-        # Q4 begin
+        # Q6 begin
         for i in range(len(self.rects)):  # 把每個按鈕的編號 0、1、2 依序拿出來檢查
             if "__fill_in__":  # 判斷滑鼠是不是點在第 i 個按鈕裡面
                 self.current_gear = "__fill_in__"  # 把目前檔位換成第 i 個
                 return "__fill_in__"  # 回傳這個檔位對應的最高速度
         return None  # 三個按鈕都沒點到，回傳 None
-        # Q4 end
+        # Q6 end
 
     def draw(self, screen, font):
         for i, rect in enumerate(self.rects):
@@ -97,7 +97,7 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     """
     """
     --------------------------------------------------------
-    Q5. 完成撞到賽道邊界要做的事
+    Q7. 完成撞到賽道邊界要做的事
     Todo : 呼叫 car.collision(track_back) 檢查車子是不是撞到賽道外。
            如果撞到了：
              1. 把 state.score 設成 0
@@ -108,10 +108,10 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
            你不需要知道它怎麼判斷撞牆，只要拿它的回傳值寫 if 就好
     --------------------------------------------------------
     """
-    # Q5 begin
-    if car.collision("__fill_in__"):  # 檢查車子是不是撞到賽道外
-        state.score = "__fill_in__"  # 分數歸零
-        state.checkpoints_passed = "__fill_in__"  # 三個檢查點都重設成沒通過
+    # Q7 begin
+    if car.collision(track_back):  # 檢查車子是不是撞到賽道外
+        state.score = 0  # 分數歸零
+        state.checkpoints_passed = [False, False, False]  # 三個檢查點都重設成沒通過
         state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES  # 顯示撞牆提示，並設定要顯示幾個 frame
         car.reset(spawn_x, spawn_y, spawn_angle)  # 車子回到起點，速度跟角度也重設
-    # Q5 end
+    # Q7 end

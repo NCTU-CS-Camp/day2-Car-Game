@@ -56,7 +56,7 @@ uv run python main_blank.py
 |---|---|---|
 | `main_blank.py` | Q1 | 載入圖片 |
 | `controls_blank.py` | Q2、Q3 | W/S 加速倒車、J/K 轉向 |
-| `speed_and_boundary_blank.py` | Q4、Q5 | 滑鼠點擊變速按鈕、撞到賽道邊界 |
-| `score_blank.py` | Q6、Q7 | 順向繞完一圈才能加分、最高分紀錄 |
+| `score_blank.py` | Q4、Q5 | 順向繞完一圈才能加分、最高分紀錄 |
+| `speed_and_boundary_blank.py` | Q6、Q7 | 滑鼠點擊變速按鈕、撞到賽道邊界 |
 
 `car.py` 是完整寫好的物理引擎，挖空版不會動它——不需要知道裡面怎麼算，只要知道呼叫哪個函式就會動。

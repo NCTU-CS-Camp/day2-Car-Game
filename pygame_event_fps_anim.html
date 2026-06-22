@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event 信箱 / How the game works 動畫</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Noto Sans TC","Segoe UI",system-ui,sans-serif; background:transparent; color:#e8eaf0; padding:18px; }
+  .wrap { max-width:680px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+  .panel { background:#1b2030; border:1px solid rgba(255,255,255,.10); border-radius:16px; padding:14px 14px 16px; }
+  .ptitle { font-size:15px; font-weight:700; color:#fff; margin-bottom:4px; }
+  .ptitle .mod { color:#ffd166; font-family:"Consolas",monospace; }
+  .psub { font-size:12.5px; color:#9aa3bd; margin-bottom:12px; }
+  .stagewrap { position:relative; height:160px; border-radius:10px; background:#0e1220; overflow:hidden; }
+  .stage { position:absolute; left:50%; top:0; transform:translateX(-50%); width:600px; height:100%; }
+
+  /* shared car */
+  .car { position:absolute; width:46px; height:26px; }
+  .car .body { position:absolute; left:2px; top:9px; width:42px; height:11px; border-radius:4px; background:#e23b3b; }
+  .car .roof { position:absolute; left:12px; top:2px; width:20px; height:10px; border-radius:4px 4px 0 0; background:#e23b3b; }
+  .car .win  { position:absolute; left:15px; top:4px; width:14px; height:6px; border-radius:2px; background:#bfe3ff; }
+  .car .w1, .car .w2 { position:absolute; bottom:0; width:9px; height:7px; border-radius:3px; background:#15181f; }
+  .car .w1{ left:8px; } .car .w2{ left:30px; }
+
+  /* ===== Panel A: event mailbox ===== */
+  .src { position:absolute; top:18px; font-size:11px; color:#cfd6ea; text-align:center; }
+  .src .ico { font-size:22px; display:block; }
+  .src.s1 { left:36px; } .src.s2 { left:120px; } .src.s3 { left:206px; }
+  .drop { position:absolute; width:9px; height:9px; border-radius:50%; }
+  .drop.k { background:#ffd166; left:58px; animation: fall 3.6s infinite; animation-delay:.2s; }
+  .drop.m { background:#7cc4ff; left:142px; animation: fall 3.6s infinite; animation-delay:1.4s; }
+  .drop.q { background:#ff8a8a; left:228px; animation: fall 3.6s infinite; animation-delay:2.6s; }
+  @keyframes fall { 0%{top:42px;opacity:0} 4%{opacity:1} 14%{top:78px;opacity:1} 18%{top:78px;opacity:0} 100%{opacity:0} }
+
+  .mailbox { position:absolute; left:36px; top:74px; width:200px; height:54px; border:2px solid #3a4f7a; border-radius:8px; background:#141d33; }
+  .mailbox .lbl { position:absolute; top:-10px; left:10px; background:#1b2030; padding:0 6px; font-size:11px; color:#9fb4dd; }
+  .mailbox .slot { position:absolute; top:6px; left:18px; right:18px; height:4px; border-radius:3px; background:#2c3a5c; }
+
+  .belt { position:absolute; left:0; top:88px; right:0; height:2px; }
+  .chip { position:absolute; top:84px; padding:3px 9px; border-radius:14px; font-size:11px; font-weight:700; white-space:nowrap; }
+  .chip.k { background:#ffd166; color:#3a2c00; }
+  .chip.m { background:#7cc4ff; color:#06243f; }
+  .chip.q { background:#ff8a8a; color:#3a0a0a; }
+  .c1 { animation: travel 3.6s infinite; animation-delay:.4s; }
+  .c2 { animation: travel 3.6s infinite; animation-delay:1.6s; }
+  .c3 { animation: travel 3.6s infinite; animation-delay:2.8s; }
+  @keyframes travel { 0%{left:120px;opacity:0;transform:scale(.6)} 8%{opacity:1;transform:scale(1)} 60%{left:430px;opacity:1} 70%{left:470px;opacity:0;transform:scale(.6)} 100%{left:470px;opacity:0} }
+
+  .loop { position:absolute; right:14px; top:74px; width:150px; height:54px; border:2px solid #ffd166; border-radius:8px; background:#211c0a; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .loop code { font-family:"Consolas",monospace; font-size:10.5px; color:#ffe08a; text-align:center; line-height:1.3; }
+  .loop .ok { position:absolute; right:-10px; top:-10px; width:22px; height:22px; border-radius:50%; background:#34d399; color:#06281d; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center; opacity:0; animation: ok 1.2s infinite; }
+  @keyframes ok { 0%,55%{opacity:0;transform:scale(.5)} 65%{opacity:1;transform:scale(1)} 90%,100%{opacity:0;transform:scale(1)} }
+  .flow { position:absolute; top:96px; font-size:14px; color:#56607e; }
+  .flow.f1{ left:250px; } .flow.f2{ left:300px; } .flow.f3{ left:350px; }
+
+  /* ===== Panel B: how the game works ===== */
+  .gamescreen { position:absolute; left:0; top:0; right:0; height:84px; overflow:hidden; }
+  .grass { position:absolute; inset:0; background:#4f8f3a; }
+  .asphalt { position:absolute; left:0; right:0; top:30px; height:40px; background:#343a4d; }
+  .lane { position:absolute; left:0; right:0; top:48px; height:4px; background:repeating-linear-gradient(90deg,#f4d35e 0 16px, transparent 16px 32px); }
+  .carB { top:38px; animation: drive 2.4s linear infinite; }
+  @keyframes drive { 0%{left:-46px} 100%{left:600px} }
+  .fpsbadge { position:absolute; right:10px; top:8px; background:#0e1220; border:1px solid #34d399; color:#34d399; font-family:"Consolas",monospace; font-size:12px; padding:2px 8px; border-radius:6px; z-index:3; }
+  .fpsbadge .tick { display:inline-block; width:7px;height:7px;border-radius:50%;background:#34d399;margin-left:4px;animation: blink .4s steps(1) infinite; }
+  @keyframes blink { 50%{opacity:.25} }
+
+  .striplabel { position:absolute; top:92px; left:4px; font-size:11px; color:#9aa3bd; }
+  .strip { position:absolute; left:4px; right:4px; top:112px; display:flex; gap:5px; }
+  .frame { position:relative; width:68px; height:38px; border-radius:4px; background:#0b1424; overflow:hidden; border:1px solid #20304a; }
+  .frame .mini { position:absolute; top:16px; width:18px; height:10px; border-radius:2px; background:#e23b3b; }
+  .frame .road { position:absolute; left:0; right:0; top:14px; height:14px; background:#2b3142; }
+  .playhead { position:absolute; top:110px; left:4px; width:70px; height:42px; border:2px solid #ffd166; border-radius:5px; box-shadow:0 0 8px rgba(255,209,102,.5); animation: play 2.4s steps(8) infinite; }
+  @keyframes play { from{ left:4px } to{ left:588px } }
+
+  /* ===== Panel C: game loop ===== */
+  .loopstage { position:absolute; left:50%; top:0; transform:translateX(-50%); width:600px; height:100%; }
+  .gl-arrows { position:absolute; inset:0; }
+  .step { position:absolute; width:184px; height:50px; border-radius:9px; border:2px solid #34405e; background:#141b2c; display:flex; align-items:center; justify-content:center; gap:8px; font-size:12.5px; color:#cfd6ea; }
+  .step .n { width:19px; height:19px; flex:none; border-radius:50%; background:#34405e; color:#cfe3ff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .step .code { font-family:"Consolas",monospace; font-size:10.5px; color:#8fa0c4; }
+  .s1{ left:8px;   top:14px; } .s2{ left:208px; top:14px; } .s3{ left:408px; top:14px; }
+  .s4{ left:408px; top:96px; } .s5{ left:208px; top:96px; } .s6{ left:8px;   top:96px; }
+  .s1{ animation: glow 3.6s infinite; animation-delay:0s; }
+  .s2{ animation: glow 3.6s infinite; animation-delay:.6s; }
+  .s3{ animation: glow 3.6s infinite; animation-delay:1.2s; }
+  .s4{ animation: glow 3.6s infinite; animation-delay:1.8s; }
+  .s5{ animation: glow 3.6s infinite; animation-delay:2.4s; }
+  .s6{ animation: glow 3.6s infinite; animation-delay:3.0s; }
+  @keyframes glow { 0%{border-color:#34405e; background:#141b2c; color:#cfd6ea} 1%{border-color:#ffd166; background:#2a2410; color:#fff} 15%{border-color:#ffd166; background:#2a2410; color:#fff} 18%{border-color:#34405e; background:#141b2c; color:#cfd6ea} 100%{border-color:#34405e; background:#141b2c; color:#cfd6ea} }
+  .token { position:absolute; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; background:#ffd166; box-shadow:0 0 10px 3px rgba(255,209,102,.7); offset-path: path("M100 39 H500 V121 H100 Z"); offset-rotate:0deg; animation: orbit 3.6s linear infinite; }
+  @keyframes orbit { from{ offset-distance:0% } to{ offset-distance:100% } }
+  .gl-center { position:absolute; left:208px; top:64px; width:184px; height:32px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#ffd166; text-align:center; }
+  .frametag { position:absolute; left:208px; top:64px; width:184px; text-align:center; font-size:11px; color:#34d399; font-weight:700; opacity:0; animation: ftag 3.6s infinite; }
+  @keyframes ftag { 0%,82%{opacity:0; transform:translateY(4px)} 88%{opacity:1; transform:translateY(0)} 98%,100%{opacity:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== Panel A ===== -->
+  <div class="panel">
+    <div class="ptitle">事件信箱 — <span class="mod">pygame.event</span></div>
+    <div class="psub">使用者操作 → 變成事件丟進佇列 → 遊戲迴圈一封一封拆開處理</div>
+    <div class="stagewrap">
+      <div class="stage">
+        <div class="src s1"><span class="ico">⌨️</span>按 W</div>
+        <div class="src s2"><span class="ico">🖱️</span>點滑鼠</div>
+        <div class="src s3"><span class="ico">❌</span>關視窗</div>
+
+        <div class="drop k"></div>
+        <div class="drop m"></div>
+        <div class="drop q"></div>
+
+        <div class="mailbox">
+          <span class="lbl">事件佇列 event queue</span>
+          <span class="slot"></span>
+        </div>
+
+        <span class="flow f1">›</span><span class="flow f2">›</span><span class="flow f3">›</span>
+
+        <div class="chip k c1">KEYDOWN</div>
+        <div class="chip m c2">MOUSEBUTTONDOWN</div>
+        <div class="chip q c3">QUIT</div>
+
+        <div class="loop">
+          <code>for event in<br>event.get():</code>
+          <div class="ok">✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Panel B ===== -->
+  <div class="panel">
+    <div class="ptitle">How does the game work?</div>
+    <div class="psub">畫面是一格一格的影格快速串起來的，每秒更新 FPS 格</div>
+    <div class="stagewrap" style="height:170px">
+      <div class="stage">
+        <div class="gamescreen">
+          <div class="grass"></div><div class="asphalt"></div><div class="lane"></div>
+          <div class="fpsbadge">30 FPS<span class="tick"></span></div>
+          <div class="car carB"><div class="roof"></div><div class="body"></div><div class="win"></div><div class="w1"></div><div class="w2"></div></div>
+        </div>
+
+        <div class="striplabel">一格一格的畫面 (frames)：</div>
+        <div class="strip">
+          <div class="frame"><div class="road"></div><div class="mini" style="left:4px"></div></div>
+          <div class="frame"><div class="road"></div><div class="mini" style="left:11px"></div></div>
+          <div class="frame"><div class="road"></div><div class="mini" style="left:18px"></div></div>
+          <div class="frame"><div class="road"></div><div class="mini" style="left:25px"></div></div>
+          <div class="frame"><div class="road"></div><div class="mini" style="left:32px"></div></div>
+          <div class="frame"><div class="road"></div><div class="mini" style="left:39px"></div></div>
+          <div class="frame"><div class="road"></div><div class="mini" style="left:46px"></div></div>
+          <div class="frame"><div class="road"></div><div class="mini" style="left:53px"></div></div>
+        </div>
+        <div class="playhead"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Panel C: game loop ===== -->
+  <div class="panel">
+    <div class="ptitle">遊戲主迴圈 — game loop</div>
+    <div class="psub">while 迴圈一直跑：每跑一圈做這 6 件事 = 畫面更新一幀，光點代表現在跑到哪一步</div>
+    <div class="stagewrap" style="height:175px">
+      <div class="loopstage">
+        <svg class="gl-arrows" viewBox="0 0 600 160" preserveAspectRatio="none">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#5a86c8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+          <line x1="194" y1="39" x2="206" y2="39" stroke="#5a86c8" stroke-width="1.6" marker-end="url(#ah)"/>
+          <line x1="394" y1="39" x2="406" y2="39" stroke="#5a86c8" stroke-width="1.6" marker-end="url(#ah)"/>
+          <line x1="500" y1="66" x2="500" y2="94" stroke="#5a86c8" stroke-width="1.6" marker-end="url(#ah)"/>
+          <line x1="406" y1="121" x2="394" y2="121" stroke="#5a86c8" stroke-width="1.6" marker-end="url(#ah)"/>
+          <line x1="206" y1="121" x2="194" y2="121" stroke="#5a86c8" stroke-width="1.6" marker-end="url(#ah)"/>
+          <line x1="100" y1="94" x2="100" y2="66" stroke="#5a86c8" stroke-width="1.6" marker-end="url(#ah)"/>
+        </svg>
+
+        <div class="step s1"><span class="n">1</span>處理事件</div>
+        <div class="step s2"><span class="n">2</span>控制車子<span class="code">W/S/J/K</span></div>
+        <div class="step s3"><span class="n">3</span>更新位置<span class="code">car.update</span></div>
+        <div class="step s4"><span class="n">4</span>碰撞 / 計分</div>
+        <div class="step s5"><span class="n">5</span>重畫畫面<span class="code">blit</span></div>
+        <div class="step s6"><span class="n">6</span>tick(FPS)</div>
+
+        <div class="gl-center">一圈 = 一幀</div>
+        <div class="frametag">畫面 +1 幀 🏁</div>
+
+        <div class="token"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

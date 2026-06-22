@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pygame 重要模組 動畫示意</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Noto Sans TC","Segoe UI",system-ui,sans-serif; background: transparent; color: #e8eaf0; padding: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; max-width: 1120px; margin: 0 auto; }
+  @media (max-width: 820px){ .grid{ grid-template-columns: repeat(2,1fr); } }
+  .tile { background: #1b2030; border: 1px solid rgba(255,255,255,.10); border-radius: 14px; padding: 12px; display:flex; flex-direction:column; gap:10px; }
+  .screen { position: relative; height: 124px; border-radius: 10px; background:#0e1220; overflow: hidden; }
+  .cap b { font-size: 15px; color:#fff; display:block; }
+  .cap span { font-size: 12.5px; color:#9aa3bd; }
+  .mod { color:#ffd166; }
+
+  /* shared road scene */
+  .grass { position:absolute; inset:0; background:#4f8f3a; }
+  .asphalt { position:absolute; left:0; right:0; top:40px; height:44px; background:#343a4d; }
+  .lane { position:absolute; left:0; right:0; top:60px; height:4px; background:repeating-linear-gradient(90deg,#f4d35e 0 16px, transparent 16px 32px); }
+  .car { position:absolute; width:46px; height:26px; }
+  .car .body { position:absolute; left:2px; top:9px; width:42px; height:11px; border-radius:4px; background:#e23b3b; }
+  .car .roof { position:absolute; left:12px; top:2px; width:20px; height:10px; border-radius:4px 4px 0 0; background:#e23b3b; }
+  .car .win  { position:absolute; left:15px; top:4px; width:14px; height:6px; border-radius:2px; background:#bfe3ff; }
+  .car .w1, .car .w2 { position:absolute; bottom:0; width:9px; height:7px; border-radius:3px; background:#15181f; }
+  .car .w1{ left:8px; } .car .w2{ left:30px; }
+
+  /* 1. Surface: 空視窗 → 畫面被畫上去 */
+  .win-frame { position:absolute; inset:8px; border-radius:6px; overflow:hidden; border:1px solid #3a425e; }
+  .titlebar { position:absolute; top:0; left:0; right:0; height:16px; background:#2a3450; color:#cfd6ea; font-size:9px; line-height:16px; padding-left:6px; z-index:3; }
+  .canvas-wrap { position:absolute; top:16px; left:0; right:0; bottom:0; overflow:hidden; }
+  .paint { position:absolute; inset:0; animation: wipe 3.2s infinite; }
+  @keyframes wipe { 0%,8%{ clip-path: inset(0 100% 0 0);} 55%,90%{ clip-path: inset(0 0 0 0);} 100%{ clip-path: inset(0 100% 0 0);} }
+  .empty-tag { position:absolute; inset:16px 0 0 0; display:flex; align-items:center; justify-content:center; font-size:10px; color:#5a648a; animation: hideEmpty 3.2s infinite; }
+  @keyframes hideEmpty { 0%,12%{opacity:1} 28%,100%{opacity:0} }
+
+  /* 2. Rect: 車撞到草地邊界 */
+  .car2 { top:48px; left:6px; animation: drift 3.4s infinite; }
+  @keyframes drift { 0%{ top:48px; left:6px;} 45%{ top:48px; left:60px;} 70%{ top:18px; left:92px;} 80%,100%{ top:18px; left:92px;} }
+  .hitbox { position:absolute; inset:-3px; border:2px dashed #ffffff; border-radius:5px; opacity:.5; }
+  .crash { position:absolute; top:6px; left:50%; transform:translateX(-50%); font-size:12px; font-weight:800; color:#ff6b6b; opacity:0; animation: crash 3.4s infinite; }
+  @keyframes crash { 0%,68%{opacity:0} 74%,86%{opacity:1} 92%,100%{opacity:0} }
+  .car2.flash .body, .car2.flash .roof { animation: redflash 3.4s infinite; }
+  @keyframes redflash { 0%,68%{ background:#e23b3b;} 74%,86%{ background:#ff2d2d;} 92%,100%{ background:#e23b3b;} }
+
+  /* 3. event: 按 W 鍵 → 冒出 KEYDOWN 事件 */
+  .center { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .keycap { width:42px; height:42px; border-radius:8px; background:#2d3650; border:1px solid #4a5578; color:#fff; font-weight:700; font-size:18px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 0 #161b2b; animation: press 2.6s infinite; }
+  @keyframes press { 0%,60%,100%{transform:translateY(0);box-shadow:0 4px 0 #161b2b} 70%,85%{transform:translateY(4px);box-shadow:0 0 0 #161b2b} }
+  .evt { position:absolute; top:10px; left:50%; transform:translateX(-50%); font-size:11px; color:#0e1220; background:#ffd166; padding:2px 9px; border-radius:20px; font-weight:700; opacity:0; animation: evt 2.6s infinite; }
+  @keyframes evt { 0%,65%{opacity:0;transform:translate(-50%,6px)} 75%{opacity:1;transform:translate(-50%,0)} 95%,100%{opacity:0;transform:translate(-50%,-10px)} }
+
+  /* 4. font: 打字機顯示文字 */
+  .ftxt { font-family:"Consolas",monospace; font-size:22px; color:#fff; white-space:nowrap; overflow:hidden; border-right:2px solid #ffd166; width:0; animation: type 3s steps(9) infinite, caret .6s step-end infinite; }
+  @keyframes type { 0%{width:0} 50%,90%{width:9ch} 100%{width:0} }
+  @keyframes caret { 50%{border-color:transparent} }
+
+  /* 5. draw: 一筆一筆描出多邊形（原始版） */
+  .draw-svg polygon { stroke:#a78bfa; stroke-width:3; fill:rgba(167,139,250,0); }
+  .draw-svg .stroke { stroke-dasharray:300; stroke-dashoffset:300; animation: drawit 3s infinite; }
+  @keyframes drawit { 0%{stroke-dashoffset:300; fill:rgba(167,139,250,0)} 60%{stroke-dashoffset:0; fill:rgba(167,139,250,0)} 80%,95%{stroke-dashoffset:0; fill:rgba(167,139,250,.45)} 100%{stroke-dashoffset:300; fill:rgba(167,139,250,0)} }
+
+  /* 6. image: 一行程式 → 讀出一張車子圖 */
+  .loadbox2 { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; }
+  .codeline { font-family:"Consolas",monospace; font-size:11px; color:#bfe3ff; background:#172036; padding:4px 9px; border-radius:5px; }
+  .arrowdown { color:#34d399; font-size:16px; line-height:1; animation: adown 2.8s infinite; }
+  @keyframes adown { 0%,30%{opacity:.2} 48%,82%{opacity:1} 100%{opacity:.2} }
+  .result { width:96px; height:48px; border-radius:8px; background:#0b1020; display:flex; align-items:center; justify-content:center; opacity:0; animation: appear 2.8s infinite; }
+  @keyframes appear { 0%,38%{opacity:0; transform:scale(.8)} 56%,86%{opacity:1; transform:scale(1)} 100%{opacity:0; transform:scale(.8)} }
+
+  /* 7. time: clock.tick(30) 一拍一格 */
+  .metro { position:absolute; top:10px; left:50%; transform:translateX(-50%); font-family:"Consolas",monospace; color:#34d399; font-size:13px; }
+  .car7 { top:48px; left:6px; animation: step 2s steps(5) infinite; }
+  @keyframes step { 0%{left:6px} 100%{left:86px} }
+  .beat { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:flex; gap:6px; }
+  .beat i { width:7px; height:7px; border-radius:50%; background:#33384a; }
+  .beat i.on { animation: beat 2s steps(1) infinite; }
+  @keyframes beat { 0%{background:#34d399} 100%{background:#34d399} }
+
+  /* 8. blit: 把車貼到 (x,y) — 車身正好落在虛線框 */
+  .blit-stage { position:absolute; left:50%; top:0; transform:translateX(-50%); width:200px; height:100%; }
+  .target { position:absolute; left:150px; top:46px; width:46px; height:26px; border:2px dashed #ffd166; border-radius:5px; }
+  .xy { position:absolute; left:150px; top:28px; font-size:10px; color:#ffd166; font-family:"Consolas",monospace; }
+  .car8 { top:46px; left:150px; opacity:0; transform-origin:center; animation: blit 2.4s infinite; }
+  @keyframes blit { 0%,12%{opacity:0; transform:scale(1.5)} 26%{opacity:1; transform:scale(1)} 74%{opacity:1; transform:scale(1)} 88%,100%{opacity:0; transform:scale(1.5)} }
+  .target.pulse { animation: tpulse 2.4s infinite; }
+  @keyframes tpulse { 0%,20%{border-color:#ffd166} 26%,74%{border-color:#34d399} 80%,100%{border-color:#ffd166} }
+
+  /* 單一模組模式：網址加 #surface / #rect / #event / #font / #draw / #image / #time / #blit */
+  body.single { padding:0; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+  body.single .grid { display:block; margin:0; max-width:none; }
+  body.single .tile { display:none; }
+  body.single .tile.show { display:flex; width:420px; transform:scale(1.45); transform-origin:center; }
+</style>
+</head>
+<body>
+  <div class="grid">
+
+    <!-- 1 Surface -->
+    <div class="tile">
+      <div class="screen">
+        <div class="win-frame">
+          <div class="titlebar">Car Game</div>
+          <div class="canvas-wrap">
+            <div class="empty-tag">空白的 Surface</div>
+            <div class="paint">
+              <div class="grass"></div><div class="asphalt"></div><div class="lane"></div>
+              <div class="car" style="top:54px;left:40px"><div class="roof"></div><div class="body"></div><div class="win"></div><div class="w1"></div><div class="w2"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap"><b><span class="mod">pygame.Surface</span></b><span>整個遊戲畫面就是一塊 Surface</span></div>
+    </div>
+
+    <!-- 2 Rect -->
+    <div class="tile">
+      <div class="screen">
+        <div class="grass"></div><div class="asphalt"></div><div class="lane"></div>
+        <div class="crash">撞牆! Score: 0</div>
+        <div class="car car2 flash"><div class="hitbox"></div><div class="roof"></div><div class="body"></div><div class="win"></div><div class="w1"></div><div class="w2"></div></div>
+      </div>
+      <div class="cap"><b><span class="mod">pygame.Rect</span></b><span>用方框偵測車子撞到邊界</span></div>
+    </div>
+
+    <!-- 3 event -->
+    <div class="tile">
+      <div class="screen">
+        <span class="evt">KEYDOWN</span>
+        <div class="center"><div class="keycap">W</div></div>
+      </div>
+      <div class="cap"><b><span class="mod">pygame.event</span></b><span>處理使用者觸發的事件</span></div>
+    </div>
+
+    <!-- 4 font -->
+    <div class="tile">
+      <div class="screen">
+        <div class="center"><div class="ftxt">Score: 1</div></div>
+      </div>
+      <div class="cap"><b><span class="mod">pygame.font</span></b><span>在螢幕上顯示文字</span></div>
+    </div>
+
+    <!-- 5 draw -->
+    <div class="tile">
+      <div class="screen">
+        <div class="center">
+          <svg class="draw-svg" width="84" height="84" viewBox="0 0 90 90">
+            <polygon class="stroke" points="45,8 56,34 84,34 61,52 70,80 45,62 20,80 29,52 6,34 34,34"/>
+          </svg>
+        </div>
+      </div>
+      <div class="cap"><b><span class="mod">pygame.draw</span></b><span>畫出多邊形圖形</span></div>
+    </div>
+
+    <!-- 6 image -->
+    <div class="tile">
+      <div class="screen">
+        <div class="loadbox2">
+          <div class="codeline">image.load("car.png")</div>
+          <div class="arrowdown">▼</div>
+          <div class="result">
+            <svg width="80" height="40" viewBox="0 0 80 40">
+              <rect x="30" y="11" width="18" height="9" rx="3" fill="#e23b3b"/>
+              <rect x="22" y="19" width="36" height="10" rx="3" fill="#e23b3b"/>
+              <rect x="33" y="13" width="12" height="6" rx="2" fill="#bfe3ff"/>
+              <circle cx="31" cy="30" r="4.5" fill="#15181f"/>
+              <circle cx="50" cy="30" r="4.5" fill="#15181f"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="cap"><b><span class="mod">pygame.image.load</span></b><span>讀檔案 → 得到車子圖 (Q1!)</span></div>
+    </div>
+
+    <!-- 7 time -->
+    <div class="tile">
+      <div class="screen">
+        <div class="grass"></div><div class="asphalt"></div><div class="lane"></div>
+        <div class="metro">clock.tick(30)</div>
+        <div class="car car7"><div class="roof"></div><div class="body"></div><div class="win"></div><div class="w1"></div><div class="w2"></div></div>
+        <div class="beat"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="cap"><b><span class="mod">pygame.time</span></b><span>clock.tick(30) 控制更新速度</span></div>
+    </div>
+
+    <!-- 8 blit -->
+    <div class="tile">
+      <div class="screen">
+        <div class="grass"></div><div class="asphalt"></div><div class="lane"></div>
+        <div class="blit-stage">
+          <div class="xy">(x, y)</div>
+          <div class="target pulse"></div>
+          <div class="car car8"><div class="roof"></div><div class="body"></div><div class="win"></div><div class="w1"></div><div class="w2"></div></div>
+        </div>
+      </div>
+      <div class="cap"><b><span class="mod">blit(car, (x,y))</span></b><span>把車貼到賽道上的位置</span></div>
+    </div>
+
+  </div>
+<script>
+(function(){
+  // 八個模組依序對應網址 #fragment
+  var order = ["surface","rect","event","font","draw","image","time","blit"];
+  var tiles = document.querySelectorAll('.tile');
+  function apply(){
+    var h = (location.hash || '').replace('#','').toLowerCase();
+    var idx = order.indexOf(h);
+    tiles.forEach(function(t){ t.classList.remove('show'); });
+    if(idx >= 0){
+      document.body.classList.add('single');
+      tiles[idx].classList.add('show');
+    } else {
+      document.body.classList.remove('single');
+    }
+  }
+  apply();
+  window.addEventListener('hashchange', apply);
+})();
+</script>
+</body>
+</html>

@@ -9,9 +9,9 @@ import pygame
 FINISH_RECT = pygame.Rect(60, 428, 135, 26)
 # 必須依序踩過 CP1 -> CP2 -> CP3 才算一圈，逆向繞圈會先踩到 CP3，順序不對就不會算
 CHECKPOINTS = [
-    pygame.Rect(710, 210, 80, 80),
-    pygame.Rect(1410, 310, 80, 80),
-    pygame.Rect(660, 780, 80, 80),
+    pygame.Rect(740, 175, 30, 160),
+    pygame.Rect(1395, 335, 160, 30),
+    pygame.Rect(790, 710, 30, 155),
 ]
 MESSAGE_FRAMES = 30  # "+1 Lap!" / "Crashed!" 訊息要停留幾個 frame
 

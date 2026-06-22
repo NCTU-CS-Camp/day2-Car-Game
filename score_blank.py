@@ -57,7 +57,7 @@ def update_lap_progress(car, state):
 
     """
     --------------------------------------------------------
-    Q6-1. 處理車子通過 CP1
+    Q4-1. 處理車子通過 CP1
     Todo : 如果車子位於 CP1：
            1. CP2 已通過時，代表車子從 CP2 逆向回到 CP1，
               將 CP2 改為尚未通過。
@@ -68,15 +68,15 @@ def update_lap_progress(car, state):
            2. 可以用 any(state.checkpoints_passed) 來判斷是否已有任一 checkpoint 通過。
     --------------------------------------------------------
     """
-    # Q6-1 begin
+    # Q4-1 begin
     if on_checkpoint_1:
         if "__fill_in__":
             state.checkpoints_passed[1] = False
         elif "__fill_in__":
             state.checkpoints_passed[0] = True
-    # Q6-1 end
+    # Q4-1 end
 
-    # Q6-1 answer:
+    # Q4-1 answer:
     # if on_checkpoint_1:
     #     if state.checkpoints_passed[1]:
     #         state.checkpoints_passed[1] = False
@@ -85,7 +85,7 @@ def update_lap_progress(car, state):
 
     """
     --------------------------------------------------------
-    Q6-2. 處理車子通過 CP2
+    Q4-2. 處理車子通過 CP2
     Todo : 如果車子位於 CP2：
            1. CP3 已通過時，代表車子從 CP3 逆向回到 CP2，
               將 CP3 改為尚未通過。
@@ -96,15 +96,15 @@ def update_lap_progress(car, state):
            2. 
     --------------------------------------------------------
     """
-    # Q6-2 begin
+    # Q4-2 begin
     if on_checkpoint_2:
         if "__fill_in__":
             state.checkpoints_passed[2] = False
         elif "__fill_in__" and "__fill_in__":
             state.checkpoints_passed[1] = True
-    # Q6-2 end
+    # Q4-2 end
 
-    # Q6-2 answer:
+    # Q4-2 answer:
     # if on_checkpoint_2:
     #     if state.checkpoints_passed[2]:
     #         state.checkpoints_passed[2] = False
@@ -113,23 +113,23 @@ def update_lap_progress(car, state):
 
     """
     --------------------------------------------------------
-    Q6-3. 處理車子通過 CP3
+    Q4-3. 處理車子通過 CP3
     Todo : 車子位於 CP3，而且 CP2 已通過、CP3 尚未通過時，
            將 CP3 設為已通過。
     Hint : 
            1. CP2、CP3 分別是 state.checkpoints_passed[1]、[2]。
     --------------------------------------------------------
     """
-    # Q6-3 begin
+    # Q4-3 begin
     if (
         on_checkpoint_3
         and "__fill_in__"
         and "__fill_in__"
     ):
         state.checkpoints_passed[2] = True
-    # Q6-3 end
+    # Q4-3 end
 
-    # Q6-3 answer:
+    # Q4-3 answer:
     # if (
     #     on_checkpoint_3
     #     and state.checkpoints_passed[1]
@@ -139,7 +139,7 @@ def update_lap_progress(car, state):
 
     """
     --------------------------------------------------------
-    Q6-4. 處理車子完成一圈
+    Q4-4. 處理車子完成一圈
     Todo : 車子位於終點，而且 CP3 已通過時：
            1. 將 state.score 加 1。
            2. 將三個 checkpoint 全部重設為尚未通過。
@@ -150,16 +150,16 @@ def update_lap_progress(car, state):
            例如 state.checkpoints_passed[0] = False 可將 CP1 設為尚未通過。
     --------------------------------------------------------
     """
-    # Q6-4 begin
+    # Q4-4 begin
     if on_finish_line and "__fill_in__":
         state.score += 1
         for i in range(3):
             "__fill_in__"
         state.message = "+1 Lap!"
         state.message_timer = MESSAGE_FRAMES
-    # Q6-4 end
+    # Q4-4 end
 
-    # Q6-4 answer:
+    # Q4-4 answer:
     # if on_finish_line and "__fill_in__":
     #     state.score += 1
     #     for i in range(3):
@@ -182,14 +182,14 @@ def update_high_score(state):
     """
     """
     --------------------------------------------------------
-    Q7. 完成最高分的紀錄
+    Q5. 完成最高分的紀錄
     Todo : 如果 state.score 超過 state.high_score，就把 state.high_score 更新成 state.score
     Hint : 單純的數字比較，if state.score > state.high_score: ...
     --------------------------------------------------------
     """
-    # Q7 begin
+    # Q5 begin
     pass
     # 參考答案：
     # if state.score > state.high_score:
     #     state.high_score = state.score
-    # Q7 end
+    # Q5 end

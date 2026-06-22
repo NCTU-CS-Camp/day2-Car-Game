@@ -10,7 +10,7 @@ FRICTION = 0.92
 def rotation(origin, point, angle):
     """
     功能：將指定座標點繞原點旋轉。
-    參數：origin 為旋轉中心，point 為目標座標，angle 為弧度。
+    參數：origin 為旋轉中心，point 為旋轉前四個輪子的座標，angle 為弧度。
     回傳值：旋轉後的 (x, y) 座標。
     """
     ox, oy = origin

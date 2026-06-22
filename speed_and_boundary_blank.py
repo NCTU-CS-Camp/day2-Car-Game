@@ -111,7 +111,7 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     # Q7 begin
     if car.collision("__fill_in__"):  # 檢查車子是不是撞到賽道外
         state.score = "__fill_in__"  # 分數歸零
-        state.checkpoints_passed = "__fill_in__"  # 三個檢查點都重設成沒通過
+        "__fill_in__" # 三個檢查點都重設成沒通過
         state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES  # 顯示撞牆提示，並設定要顯示幾個 frame
         car.reset(spawn_x, spawn_y, spawn_angle)  # 車子回到起點，速度跟角度也重設
     # Q7 end

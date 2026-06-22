@@ -6,7 +6,7 @@
 
 import pygame
 
-FINISH_RECT = pygame.Rect(60, 428, 135, 26)
+FINISH_RECT = pygame.Rect(50, 420, 145, 35)
 # 必須依序踩過 CP1 -> CP2 -> CP3 才算一圈，逆向繞圈會先踩到 CP3，順序不對就不會算
 CHECKPOINTS = [
     pygame.Rect(740, 175, 30, 160),

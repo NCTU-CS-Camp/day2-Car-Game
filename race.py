@@ -53,7 +53,8 @@ class RaceState:
     def handle_crash(self):
         self._register_high_score()
         self.score = 0
-        self.checkpoints_passed = [False, False, False]
+        for i in range(3):
+            self.checkpoints_passed[i] = False
         self.message, self.message_timer = "Crashed!", MESSAGE_FRAMES
 
     def update(self, car):
@@ -84,7 +85,8 @@ class RaceState:
         if on_finish_line and self.checkpoints_passed[2]:
             self.score += 1
             self._register_high_score()
-            self.checkpoints_passed = [False, False, False]
+            for i in range(3):
+                self.checkpoints_passed[i] = False
             self.message, self.message_timer = "+1 Lap!", MESSAGE_FRAMES
 
     def draw(self, screen, font):

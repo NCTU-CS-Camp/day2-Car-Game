@@ -146,21 +146,24 @@ def update_lap_progress(car, state):
            3. 將 state.message 設成 "+1 Lap!"。
            4. 將 state.message_timer 設成 MESSAGE_FRAMES。
     Hint : 使用 on_finish_line 和 state.checkpoints_passed[2] 判斷。
-           可以用 [False, False, False] 重設所有 checkpoint。
+           可以用 for 迴圈重設所有 checkpoint。
+           例如 state.checkpoints_passed[0] = False 可將 CP1 設為尚未通過。
     --------------------------------------------------------
     """
     # Q6-4 begin
     if on_finish_line and "__fill_in__":
         state.score += 1
-        state.checkpoints_passed = [False, False, False]
+        for i in range(3):
+            "__fill_in__"
         state.message = "+1 Lap!"
         state.message_timer = MESSAGE_FRAMES
     # Q6-4 end
 
     # Q6-4 answer:
-    # if on_finish_line and state.checkpoints_passed[2]:
+    # if on_finish_line and "__fill_in__":
     #     state.score += 1
-    #     state.checkpoints_passed = [False, False, False]
+    #     for i in range(3):
+    #         state.checkpoints_passed[i] = False
     #     state.message = "+1 Lap!"
     #     state.message_timer = MESSAGE_FRAMES
 

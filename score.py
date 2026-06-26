@@ -57,87 +57,75 @@ def update_lap_progress(car, state):
 
     """
     --------------------------------------------------------
-    Q4-1. 處理車子通過 CP1
-    Todo : 如果車子位於 CP1：
-           1. CP2 已通過時，代表車子從 CP2 逆向回到 CP1，
-              將 CP2 改為尚未通過。
-           2. 否則，只有三個 checkpoint 都尚未通過時，
-              才把 CP1 設為已通過。
+    Q4-1. 通過 checkpoint 及 finish line
+    Todo : 
+           1. 分別判斷車車通過3個檢查點的情況，並依照順序將其設為已通過
+           2. 通過終點後，將三個檢查點重設為尚未通過
     Hint : 
-           1. CP1、CP2 分別是 state.checkpoints_passed[0]、[1]。
-           2. 可以用 any(state.checkpoints_passed) 來判斷是否已有任一 checkpoint 通過。
+           1. 使用 if 判斷式進行判斷
+           2. 使用 for 迴圈重設所有 checkpoint
     --------------------------------------------------------
     """
     # Q4-1 begin
-    if on_checkpoint_1:
-        if state.checkpoints_passed[1]:
-            state.checkpoints_passed[1] = False
-        elif not any(state.checkpoints_passed):
-            state.checkpoints_passed[0] = True
+    # if on_checkpoint_1:
+    #     state.checkpoints_passed[0] = True
+    # if on_checkpoint_2:
+    #     state.checkpoints_passed[1] = True
+    # if on_checkpoint_3:
+    #     state.checkpoints_passed[2] = True
+
+    # if on_finish_line:
+    #     state.score += 1
+    #     state.message = "+1 Lap!"
+    #     state.message_timer = MESSAGE_FRAMES
+    #     for i in range(3):
+    #         state.checkpoints_passed[i] = False
     # Q4-1 end
+    
 
     """
     --------------------------------------------------------
-    Q4-2. 處理車子通過 CP2
-    Todo : 如果車子位於 CP2：
-           1. CP3 已通過時，代表車子從 CP3 逆向回到 CP2，
-              將 CP3 改為尚未通過。
-           2. 否則，只有 CP1 已通過且 CP2 尚未通過時，
-              才把 CP2 設為已通過。
+    Q4-2. 處理逆向問題
+    Todo : 
+           
     Hint : 
-           1. CP1、CP2、CP3 分別是 state.checkpoints_passed[0]、[1]、[2]。
-           2. 
+           
     --------------------------------------------------------
     """
     # Q4-2 begin
+    if on_checkpoint_1:
+        state.checkpoints_passed[0] = True
+        if state.checkpoints_passed[1]:
+            state.checkpoints_passed[1] = False
     if on_checkpoint_2:
         if state.checkpoints_passed[2]:
             state.checkpoints_passed[2] = False
-        elif state.checkpoints_passed[0] and not state.checkpoints_passed[1]:
+        elif state.checkpoints_passed[0]:
             state.checkpoints_passed[1] = True
+    if on_checkpoint_3:
+        if not state.checkpoints_passed[1]:
+            state.checkpoints_passed[2] = False
+        else:
+            state.checkpoints_passed[2] = True
     # Q4-2 end
+    
 
     """
     --------------------------------------------------------
-    Q4-3. 處理車子通過 CP3
-    Todo : 車子位於 CP3，而且 CP2 已通過、CP3 尚未通過時，
-           將 CP3 設為已通過。
-    Hint : 
-           1. CP2、CP3 分別是 state.checkpoints_passed[1]、[2]。
+    Q4-3. 處理車子通過 finish line
+    Todo : 判斷車車是否為順向通過終點，若是的話就加分
+    Hint : all(state.checkpoints_passed) 可以判斷三個 checkpoint 是否都已通過
     --------------------------------------------------------
     """
     # Q4-3 begin
-    if (
-        on_checkpoint_3
-        and state.checkpoints_passed[1]
-        and not state.checkpoints_passed[2]
-    ):
-        state.checkpoints_passed[2] = True
-    # Q4-3 end
-
-    """
-    --------------------------------------------------------
-    Q4-4. 處理車子完成一圈
-    Todo : 車子位於終點，而且 CP3 已通過時：
-           1. 將 state.score 加 1。
-           2. 將三個 checkpoint 全部重設為尚未通過。
-           3. 將 state.message 設成 "+1 Lap!"。
-           4. 將 state.message_timer 設成 MESSAGE_FRAMES。
-    Hint : 使用 on_finish_line 和 state.checkpoints_passed[2] 判斷。
-           可以用 for 迴圈重設所有 checkpoint。
-           例如 state.checkpoints_passed[0] = False 可將 CP1 設為尚未通過。
-    --------------------------------------------------------
-    """
-    # Q4-4 begin
     if on_finish_line:
-        if state.checkpoints_passed[2]:
+        if all(state.checkpoints_passed):
             state.score += 1
             state.message = "+1 Lap!"
             state.message_timer = MESSAGE_FRAMES
         for i in range(3):
             state.checkpoints_passed[i] = False
-    # Q4-4 end
-
+    # Q4-3 end
 
 def update_high_score(state):
     """

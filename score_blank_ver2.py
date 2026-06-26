@@ -98,17 +98,43 @@ def update_lap_progress(car, state):
     #     for i in range(3):
     #         state.checkpoints_passed[i] = False
     
+    """
+    --------------------------------------------------------
+    Q4-2. 處理車子通過 finish line
+    Todo : 判斷車車是否為順向通過終點，若是的話就加分
+    Hint : all(state.checkpoints_passed) 可以判斷三個 checkpoint 是否都已通過
+    --------------------------------------------------------
+    """
+    # Q4-2 begin
+    if on_finish_line:
+        if "__fill_in__":    # 如果三個 checkpoint 都已通過，表示順向通過終點
+            state.score += 1
+            state.message = "+1 Lap!"
+            state.message_timer = MESSAGE_FRAMES
+        for i in range(3):
+            state.checkpoints_passed[i] = False
+    # Q4-2 end
+
+    # Q4-2 answer:
+    # if on_finish_line:
+    #     if all(state.checkpoints_passed):
+    #         state.score += 1
+    #         state.message = "+1 Lap!"
+    #         state.message_timer = MESSAGE_FRAMES
+    #     for i in range(3):
+    #         state.checkpoints_passed[i] = False
+
 
     """
     --------------------------------------------------------
-    Q4-2. 處理逆向問題
+    Q4-3. 處理逆向問題
     Todo : 
            
     Hint : 
            
     --------------------------------------------------------
     """
-    # Q4-2 begin
+    # Q4-3 begin
     if on_checkpoint_1:
         state.checkpoints_passed[0] = True
         if state.checkpoints_passed[1]:
@@ -125,9 +151,9 @@ def update_lap_progress(car, state):
             state.checkpoints_passed[2] = False
         else:                # 否則設為通過
             state.checkpoints_passed[2] = True
-    # Q4-2 end
+    # Q4-3 end
 
-    # Q4-2 answer:
+    # Q4-3 answer:
     # if on_checkpoint_1:
     #     state.checkpoints_passed[0] = True
     #     if state.checkpoints_passed[1]:
@@ -142,33 +168,6 @@ def update_lap_progress(car, state):
     #         state.checkpoints_passed[2] = False
     #     else:
     #         state.checkpoints_passed[2] = True
-    
-
-    """
-    --------------------------------------------------------
-    Q4-3. 處理車子通過 finish line
-    Todo : 判斷車車是否為順向通過終點，若是的話就加分
-    Hint : all(state.checkpoints_passed) 可以判斷三個 checkpoint 是否都已通過
-    --------------------------------------------------------
-    """
-    # Q4-3 begin
-    if on_finish_line:
-        if "__fill_in__":    # 如果三個 checkpoint 都已通過，表示順向通過終點
-            state.score += 1
-            state.message = "+1 Lap!"
-            state.message_timer = MESSAGE_FRAMES
-        for i in range(3):
-            state.checkpoints_passed[i] = False
-    # Q4-3 end
-
-    # Q4-3 answer:
-    # if on_finish_line:
-    #     if all(state.checkpoints_passed):
-    #         state.score += 1
-    #         state.message = "+1 Lap!"
-    #         state.message_timer = MESSAGE_FRAMES
-    #     for i in range(3):
-    #         state.checkpoints_passed[i] = False
 
 
 def update_high_score(state):

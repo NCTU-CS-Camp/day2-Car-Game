@@ -129,12 +129,13 @@ def update_lap_progress(car, state):
     --------------------------------------------------------
     """
     # Q4-4 begin
-    if on_finish_line and state.checkpoints_passed[2]:
-        state.score += 1
+    if on_finish_line:
+        if state.checkpoints_passed[2]:
+            state.score += 1
+            state.message = "+1 Lap!"
+            state.message_timer = MESSAGE_FRAMES
         for i in range(3):
             state.checkpoints_passed[i] = False
-        state.message = "+1 Lap!"
-        state.message_timer = MESSAGE_FRAMES
     # Q4-4 end
 
 

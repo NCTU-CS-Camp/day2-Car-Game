@@ -21,12 +21,27 @@ import pygame
 
 from car import Car
 from controls import handle_movement
-from score import GameState, update_high_score, update_lap_progress
+from score import CHECKPOINTS, GameState, update_high_score, update_lap_progress
 from speed_and_boundary import GearButtons, handle_boundary
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 FPS = 30
 SPAWN_X, SPAWN_Y, SPAWN_ANGLE = 120, 480, 180
+
+
+def draw_checkpoints(screen, font, state):
+    for i, checkpoint in enumerate(CHECKPOINTS):
+        passed = state.checkpoints_passed[i]
+        color = (0, 220, 0) if passed else (255, 80, 80)
+
+        pygame.draw.rect(screen, color, checkpoint, 4)
+
+        status = "T" if passed else "F"
+        text = font.render(f"CP{i + 1}: {status}", True, color)
+        text_rect = text.get_rect(center=checkpoint.center)
+        background_rect = text_rect.inflate(12, 6)
+        pygame.draw.rect(screen, (0, 0, 0), background_rect)
+        screen.blit(text, text_rect)
 
 
 def run():
@@ -88,6 +103,7 @@ def run():
 
         # 畫面繪製
         screen.blit(track_front, (0, 0))  # 賽道背景
+        draw_checkpoints(screen, font, state)
         car.draw(screen, car_image)  # 車子
 
         # 分數與訊息文字

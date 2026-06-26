@@ -70,18 +70,11 @@ def update_lap_progress(car, state):
     """
     # Q4-1 begin
     if on_checkpoint_1:
-        if "__fill_in__":
+        if state.checkpoints_passed[1]:
             state.checkpoints_passed[1] = False
-        elif "__fill_in__":
+        elif not any(state.checkpoints_passed):
             state.checkpoints_passed[0] = True
     # Q4-1 end
-
-    # Q4-1 answer:
-    # if on_checkpoint_1:
-    #     if state.checkpoints_passed[1]:
-    #         state.checkpoints_passed[1] = False
-    #     elif not any(state.checkpoints_passed):
-    #         state.checkpoints_passed[0] = True
 
     """
     --------------------------------------------------------
@@ -98,18 +91,11 @@ def update_lap_progress(car, state):
     """
     # Q4-2 begin
     if on_checkpoint_2:
-        if "__fill_in__":
+        if state.checkpoints_passed[2]:
             state.checkpoints_passed[2] = False
-        elif "__fill_in__" and "__fill_in__":
+        elif state.checkpoints_passed[0] and not state.checkpoints_passed[1]:
             state.checkpoints_passed[1] = True
     # Q4-2 end
-
-    # Q4-2 answer:
-    # if on_checkpoint_2:
-    #     if state.checkpoints_passed[2]:
-    #         state.checkpoints_passed[2] = False
-    #     elif state.checkpoints_passed[0] and not state.checkpoints_passed[1]:
-    #         state.checkpoints_passed[1] = True
 
     """
     --------------------------------------------------------
@@ -123,19 +109,11 @@ def update_lap_progress(car, state):
     # Q4-3 begin
     if (
         on_checkpoint_3
-        and "__fill_in__"
-        and "__fill_in__"
+        and state.checkpoints_passed[1]
+        and not state.checkpoints_passed[2]
     ):
         state.checkpoints_passed[2] = True
     # Q4-3 end
-
-    # Q4-3 answer:
-    # if (
-    #     on_checkpoint_3
-    #     and state.checkpoints_passed[1]
-    #     and not state.checkpoints_passed[2]
-    # ):
-    #     state.checkpoints_passed[2] = True
 
     """
     --------------------------------------------------------
@@ -151,21 +129,13 @@ def update_lap_progress(car, state):
     --------------------------------------------------------
     """
     # Q4-4 begin
-    if on_finish_line and "__fill_in__":
+    if on_finish_line and state.checkpoints_passed[2]:
         state.score += 1
         for i in range(3):
-            "__fill_in__"
+            state.checkpoints_passed[i] = False
         state.message = "+1 Lap!"
         state.message_timer = MESSAGE_FRAMES
     # Q4-4 end
-
-    # Q4-4 answer:
-    # if on_finish_line and "__fill_in__":
-    #     state.score += 1
-    #     for i in range(3):
-    #         state.checkpoints_passed[i] = False
-    #     state.message = "+1 Lap!"
-    #     state.message_timer = MESSAGE_FRAMES
 
 
 def update_high_score(state):
@@ -188,8 +158,6 @@ def update_high_score(state):
     --------------------------------------------------------
     """
     # Q5 begin
-    pass
-    # 參考答案：
-    # if state.score > state.high_score:
-    #     state.high_score = state.score
+    if state.score > state.high_score:
+        state.high_score = state.score
     # Q5 end

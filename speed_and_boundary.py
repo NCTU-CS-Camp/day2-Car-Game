@@ -65,9 +65,9 @@ class GearButtons:
         """
         # Q6 begin
         for i in range(len(self.rects)):  # 把每個按鈕的編號 0、1、2 依序拿出來檢查
-            if "__fill_in__":  # 判斷滑鼠是不是點在第 i 個按鈕裡面
-                self.current_gear = "__fill_in__"  # 把目前檔位換成第 i 個
-                return "__fill_in__"  # 回傳這個檔位對應的最高速度
+            if self.rects[i].collidepoint(pos):  # 判斷滑鼠是不是點在第 i 個按鈕裡面
+                self.current_gear = i  # 把目前檔位換成第 i 個
+                return self.current_speed()  # 回傳這個檔位對應的最高速度
         return None  # 三個按鈕都沒點到，回傳 None
         # Q6 end
 
@@ -109,9 +109,9 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     --------------------------------------------------------
     """
     # Q7 begin
-    if car.collision("__fill_in__"):  # 檢查車子是不是撞到賽道外
-        state.score = "__fill_in__"  # 分數歸零
-        "__fill_in__" # 三個檢查點都重設成沒通過
+    if car.collision(track_back):  # 檢查車子是不是撞到賽道外
+        state.score = 0  # 分數歸零
+        state.checkpoints_passed = [False, False, False]  # 三個檢查點都重設成沒通過
         state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES  # 顯示撞牆提示，並設定要顯示幾個 frame
         car.reset(spawn_x, spawn_y, spawn_angle)  # 車子回到起點，速度跟角度也重設
     # Q7 end

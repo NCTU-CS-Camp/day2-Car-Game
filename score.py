@@ -56,7 +56,7 @@ def update_lap_progress(car, state):
     on_checkpoint_3 = CHECKPOINTS[2].collidepoint(car.x, car.y)
 
 
-    skip_Q4_1 = False  # 如果你想先跳過 Q4-1 的部分，請把這個變數改成 True
+    skip_Q4_1 = True  # 如果你想先跳過 Q4-1 的部分，請把這個變數改成 True
 
     if not skip_Q4_1:
         """
@@ -119,16 +119,19 @@ def update_lap_progress(car, state):
             state.checkpoints_passed[0] = True
             if state.checkpoints_passed[1]:
                 state.checkpoints_passed[1] = False
+
         if on_checkpoint_2:
             if state.checkpoints_passed[2]:
                 state.checkpoints_passed[2] = False
             elif state.checkpoints_passed[0]:
                 state.checkpoints_passed[1] = True
+
         if on_checkpoint_3:
             if not state.checkpoints_passed[1]:
                 state.checkpoints_passed[2] = False
             else:
                 state.checkpoints_passed[2] = True
+
         # Q4-3 end
 
 def update_high_score(state):

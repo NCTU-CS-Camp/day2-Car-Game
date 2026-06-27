@@ -20,9 +20,9 @@ from pathlib import Path
 import pygame
 
 from car import Car
-from controls_blank import handle_movement
-from score_blank import GameState, update_high_score, update_lap_progress
-from speed_and_boundary_blank import GearButtons, handle_boundary
+from controls import handle_movement
+from score import GameState, update_high_score, update_lap_progress
+from speed_and_boundary import GearButtons, handle_boundary
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 FPS = 30

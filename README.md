@@ -38,25 +38,10 @@ uv run python main.py
 ```text
 main.py                       進入點，把所有東西串在一起(讀圖、建立物件、主迴圈)
 car.py                        Car 物件：油門/轉向/碰撞偵測等物理引擎(含 move()/rotation() 數學輔助函式)
-race.py                       比賽規則(終點線/檢查點/分數/最高分)跟變速按鈕 UI
-assets/                       車子與賽道圖片
+controls.py                   處理鍵盤輸入：W/S 加速倒車、J/K 轉向
+score.py                      比賽規則與計分：終點線、檢查點、分數、最高分
+speed_and_boundary.py         變速按鈕 UI 與撞牆處理
+assets/                       車子與賽道圖片(car.png、track_front.png、track_back.png)
+checkpoint_map.png            檢查點位置示意圖
+
 ```
-
-## 挖空練習版(教學用)
-
-如果想練習自己刻一遍這個遊戲的邏輯，可以參考挖空版本，裡面把判斷邏輯挖空，每個挖空都有 `Todo`/`Hint` 說明：
-
-```bash
-uv run python main_blank.py
-```
-
-填完所有空格後，玩起來應該要跟 `main.py` 一樣。題目分散在不同檔案，每個檔案裡相關的題目放在一起：
-
-| 檔案 | 題目 | 內容 |
-|---|---|---|
-| `main_blank.py` | Q1 | 載入圖片 |
-| `controls_blank.py` | Q2、Q3 | W/S 加速倒車、J/K 轉向 |
-| `score_blank.py` | Q4、Q5 | 順向繞完一圈才能加分、最高分紀錄 |
-| `speed_and_boundary_blank.py` | Q6、Q7 | 滑鼠點擊變速按鈕、撞到賽道邊界 |
-
-`car.py` 是完整寫好的物理引擎，挖空版不會動它——不需要知道裡面怎麼算，只要知道呼叫哪個函式就會動。

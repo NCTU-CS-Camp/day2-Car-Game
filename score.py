@@ -127,9 +127,7 @@ def update_lap_progress(car, state):
                 state.checkpoints_passed[1] = True
 
         if on_checkpoint_3:
-            if not state.checkpoints_passed[1]:
-                state.checkpoints_passed[2] = False
-            else:
+            if state.checkpoints_passed[1]:
                 state.checkpoints_passed[2] = True
 
         # Q4-3 end

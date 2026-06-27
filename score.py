@@ -91,7 +91,7 @@ def update_lap_progress(car, state):
         Q4-2. 處理車子通過 finish line
         Todo : 
                !!! 重要 !!! 
-               把skip_Q4_1改成True，先跳過 Q4-1 的部分，完成這個接下來的部分
+               把 skip_Q4_1 改成 True，先跳過 Q4-1 的部分，完成這個接下來的部分
                判斷車車是否為順向通過終點，若是的話就加分
         Hint : all(state.checkpoints_passed) 可以判斷三個 checkpoint 是否都已通過
         --------------------------------------------------------

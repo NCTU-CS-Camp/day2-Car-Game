@@ -126,9 +126,7 @@ def update_lap_progress(car, state):
                 state.checkpoints_passed[1] = True
 
         if on_checkpoint_3:
-            if "__fill_in__":    # 如果 CP2 尚未通過，將 CP3 設為尚未通過
-                state.checkpoints_passed[2] = False
-            else:                # 否則設為通過
+            if "__fill_in__":    # 如果 CP2 已通過，將 CP3 設為已通過
                 state.checkpoints_passed[2] = True
         # Q4-3 end
 

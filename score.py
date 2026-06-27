@@ -81,22 +81,6 @@ def update_lap_progress(car, state):
         "__fill_in__"    # for 迴圈重設所有 checkpoint
             "__fill_in__"
     # Q4-1 end
-
-
-    # Q4-1 answer:
-    # if on_checkpoint_1:
-    #     state.checkpoints_passed[0] = True
-    # if on_checkpoint_2:
-    #     state.checkpoints_passed[1] = True
-    # if on_checkpoint_3:
-    #     state.checkpoints_passed[2] = True
-
-    # if on_finish_line:
-    #     state.score += 1
-    #     state.message = "+1 Lap!"
-    #     state.message_timer = MESSAGE_FRAMES
-    #     for i in range(3):
-    #         state.checkpoints_passed[i] = False
     
     """
     --------------------------------------------------------
@@ -114,16 +98,6 @@ def update_lap_progress(car, state):
         for i in range(3):
             state.checkpoints_passed[i] = False
     # Q4-2 end
-
-    # Q4-2 answer:
-    # if on_finish_line:
-    #     if all(state.checkpoints_passed):
-    #         state.score += 1
-    #         state.message = "+1 Lap!"
-    #         state.message_timer = MESSAGE_FRAMES
-    #     for i in range(3):
-    #         state.checkpoints_passed[i] = False
-
 
     """
     --------------------------------------------------------
@@ -150,23 +124,6 @@ def update_lap_progress(car, state):
             state.checkpoints_passed[2] = True
     # Q4-3 end
 
-    # Q4-3 answer:
-    # if on_checkpoint_1:
-    #     state.checkpoints_passed[0] = True
-    #     if state.checkpoints_passed[1]:
-    #         state.checkpoints_passed[1] = False
-    # if on_checkpoint_2:
-    #     if state.checkpoints_passed[2]:
-    #         state.checkpoints_passed[2] = False
-    #     elif state.checkpoints_passed[0]:
-    #         state.checkpoints_passed[1] = True
-    # if on_checkpoint_3:
-    #     if not state.checkpoints_passed[1]:
-    #         state.checkpoints_passed[2] = False
-    #     else:
-    #         state.checkpoints_passed[2] = True
-
-
 def update_high_score(state):
     """
     --------------------------------------------------------
@@ -188,7 +145,4 @@ def update_high_score(state):
     """
     # Q5 begin
     pass
-    # 參考答案：
-    # if state.score > state.high_score:
-    #     state.high_score = state.score
     # Q5 end

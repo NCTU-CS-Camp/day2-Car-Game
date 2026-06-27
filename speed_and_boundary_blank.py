@@ -39,18 +39,16 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
              3. 把 state.message 設成 "Crashed!"，state.message_timer 設成 MESSAGE_FRAMES
              4. 呼叫 car.reset(spawn_x, spawn_y, spawn_angle) 讓車子回到起點
     Hint : car.collision(track_back) 會回傳 True 或 False，
+           你不需要知道它怎麼判斷撞牆，只要拿它的回傳值寫 if 就好
     --------------------------------------------------------
     """
     # Q6 begin
-    if car.collision(track_back):  # 檢查車子是不是撞到賽道外(這行已經寫好了)
-        pass  # 補完撞牆要做的 4 件事(分數歸零、checkpoints 重設、顯示訊息、車子回起點)
+    if "__fill_in__":  # 檢查車子是不是撞到賽道外
+        state.score = "__fill_in__"  # 分數歸零
+        "__fill_in__"  # 三個檢查點都重設成沒通過
+        state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES  # 顯示撞牆提示，並設定要顯示幾個 frame
+        car.reset(spawn_x, spawn_y, spawn_angle)  # 車子回到起點，速度跟角度也重設
     # Q6 end
-    # 參考答案：
-    # if car.collision(track_back):
-    #     state.score = 0
-    #     state.checkpoints_passed = [False, False, False]
-    #     state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES
-    #     car.reset(spawn_x, spawn_y, spawn_angle)
 
 
 class GearButtons:
@@ -94,25 +92,21 @@ class GearButtons:
         """
         --------------------------------------------------------
         Q7. 完成滑鼠點擊變速按鈕的判斷
-        Todo : 用 for i in range(len(self.rects)): 把按鈕編號 0、1、2 依序檢查。
-               如果 self.rects[i].collidepoint(pos) 為 True(滑鼠點在第 i 個按鈕裡)：
-                 1. 把 self.current_gear 設成 i
-                 2. return self.current_speed()，把新檔位的最高速度回傳出去
-               迴圈跑完都沒點到的話，函式最後已經幫你寫好 return None 了
-        Hint : collidepoint(pos) 是 pygame.Rect 內建的方法，幫你判斷 pos 有沒有
-               落在這個矩形範圍內，回傳 True/False，不用自己算座標範圍
+        Todo : 找出滑鼠點到了 self.rects 裡的第幾個按鈕，
+               把 self.current_gear 換成那個編號，
+               並回傳新的速度(self.current_speed())。
+               如果沒有點到任何按鈕，要回傳 None
+        Hint : 用 for i in range(len(self.rects)): 把每個按鈕的編號跑一遍
+               用 self.rects[i].collidepoint(pos) 判斷滑鼠是不是點在這個按鈕裡面
         --------------------------------------------------------
         """
         # Q7 begin
-        pass  # 用迴圈檢查每個按鈕，點到了就更新 self.current_gear 並 return 新速度
-        return None  # 都沒點到(或還沒寫完上面的部分)，回傳 None
+        for i in range(len(self.rects)):  # 把每個按鈕的編號 0、1、2 依序拿出來檢查
+            if "__fill_in__":  # 判斷滑鼠是不是點在第 i 個按鈕裡面
+                self.current_gear = "__fill_in__"  # 把目前檔位換成第 i 個
+                return "__fill_in__"  # 回傳這個檔位對應的最高速度
+        return None  # 三個按鈕都沒點到，回傳 None
         # Q7 end
-        # 參考答案：
-        # for i in range(len(self.rects)):
-        #     if self.rects[i].collidepoint(pos):
-        #         self.current_gear = i
-        #         return self.current_speed()
-        # return None
 
     def draw(self, screen, font):
         for i, rect in enumerate(self.rects):

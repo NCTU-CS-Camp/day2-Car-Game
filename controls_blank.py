@@ -32,7 +32,13 @@ def handle_movement(keys, car):
     --------------------------------------------------------
     """
     # Q2 begin
-    pass
+    if "__fill_in__": #如果按下W
+        "__fill_in__" #車子前進
+    elif "__fill_in__": #如果按下S
+        "__fill_in__" #車子後退
+    else: #如果兩個都沒按
+        "__fill_in__" #車子不動
+    
     # 參考答案：
     # if keys[pygame.K_w]:
     #     car.set_accel(ACCEL)
@@ -51,7 +57,10 @@ def handle_movement(keys, car):
     --------------------------------------------------------
     """
     # Q3 begin
-    pass
+    if "__fill_in__": #如果按下J
+        "__fill_in__" #車子左轉
+    if "__fill_in__": #如果按下K
+        "__fill_in__" #車子右轉
     # 參考答案：
     # if keys[pygame.K_j]:
     #     car.rotate(-ROTATE_SPEED)

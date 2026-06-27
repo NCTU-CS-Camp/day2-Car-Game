@@ -36,25 +36,20 @@ FILL_IN = "__fill_in__"  # 還沒填的空格會長這樣
 
 
 # ===== 安全執行工具：讓「還沒寫完的題目」不會讓整個遊戲掛掉 =====
-_warned = set()  # 記錄已經提醒過哪些功能，避免重複洗版
 
 
 def _safe(label, func, *args, **kwargs):
     """
     呼叫某個「可能還沒寫完」的函式。
     - 如果這個功能根本還沒載入(func 是 None)：直接跳過。
-    - 如果呼叫時出錯(通常是還留著 "__fill_in__")：先跳過，
-      並且同一個功能只提醒一次。
-    等你把那一題寫對了，它就會自然開始運作。
+    - 如果呼叫時出錯(通常是還留著 "__fill_in__")：先跳過。
+    等你把那一題寫對了，它就會自然開始運作(過程不會在 terminal 印任何訊息)。
     """
     if func is None:
         return None
     try:
         return func(*args, **kwargs)
-    except Exception as exc:
-        if label not in _warned:
-            _warned.add(label)
-            print(f"[尚未完成] {label} 先跳過：{exc}")
+    except Exception:
         return None
 
 
@@ -66,8 +61,7 @@ def _load(module_name):
     """
     try:
         return importlib.import_module(module_name)
-    except Exception as exc:
-        print(f"[尚未完成] 無法載入 {module_name}.py，相關功能先跳過：{exc}")
+    except Exception:
         return None
 
 

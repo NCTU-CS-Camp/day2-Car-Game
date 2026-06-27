@@ -24,17 +24,17 @@ class GameState:
     #### 屬性
     - score : 目前這次的分數
     - high_score : 這次執行期間的最高分
-    - checkpoints_passed : CP1、CP2、CP3 是否已依序通過
     - message / message_timer : 畫面上顯示的提示文字跟剩餘 frame 數
+    - checkpoints_passed : CP1、CP2、CP3 是否已依序通過
     --------------------------------------------------------
     """
 
     def __init__(self):
         self.score = 0
         self.high_score = 0
-        self.checkpoints_passed = [False, False, False]
         self.message = ""
         self.message_timer = 0
+        self.checkpoints_passed = [False, False, False]
 
 
 def update_lap_progress(car, state):

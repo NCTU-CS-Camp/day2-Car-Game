@@ -89,9 +89,13 @@ def update_lap_progress(car, state):
     else:
         """
         --------------------------------------------------------
-        Q4-2. 處理車子通過 finish line
-        Todo : 判斷車車是否為順向通過終點，若是的話就加分
-        Hint : all(state.checkpoints_passed) 可以判斷三個 checkpoint 是否都已通過
+        Q4-1. 通過 checkpoint 及 finish line
+        Todo : 
+            1. 分別判斷車車通過3個檢查點的情況，並依照順序將其設為已通過
+            2. 通過終點後，將三個檢查點重設為尚未通過
+        Hint : 
+            1. 使用 if 判斷式進行判斷
+            2. 使用 for 迴圈重設所有 checkpoint
         --------------------------------------------------------
         """
         # Q4-2 begin

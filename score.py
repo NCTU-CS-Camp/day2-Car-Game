@@ -85,6 +85,7 @@ def update_lap_progress(car, state):
             "__fill_in__"    # for 迴圈重設所有 checkpoint
                 "__fill_in__"
         # Q4-1 end
+
     else:
         """
         --------------------------------------------------------
@@ -151,5 +152,5 @@ def update_high_score(state):
     --------------------------------------------------------
     """
     # Q5 begin
-    pass
+    
     # Q5 end

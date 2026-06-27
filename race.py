@@ -63,31 +63,55 @@ class RaceState:
         on_checkpoint_2 = CHECKPOINTS[1].collidepoint(car.x, car.y)
         on_checkpoint_3 = CHECKPOINTS[2].collidepoint(car.x, car.y)
 
+        # if on_checkpoint_1:
+        #     if self.checkpoints_passed[1]:
+        #         self.checkpoints_passed[1] = False
+        #     elif not any(self.checkpoints_passed):
+        #         self.checkpoints_passed[0] = True
+
+        # if on_checkpoint_2:
+        #     if self.checkpoints_passed[2]:
+        #         self.checkpoints_passed[2] = False
+        #     elif self.checkpoints_passed[0] and not self.checkpoints_passed[1]:
+        #         self.checkpoints_passed[1] = True
+
+        # if (
+        #     on_checkpoint_3
+        #     and self.checkpoints_passed[1]
+        #     and not self.checkpoints_passed[2]
+        # ):
+        #     self.checkpoints_passed[2] = True
+
+        # if on_finish_line and self.checkpoints_passed[2]:
+        #     self.score += 1
+        #     self._register_high_score()
+        #     for i in range(3):
+        #         self.checkpoints_passed[i] = False
+        #     self.message, self.message_timer = "+1 Lap!", MESSAGE_FRAMES
+
+
         if on_checkpoint_1:
+            self.checkpoints_passed[0] = True
             if self.checkpoints_passed[1]:
                 self.checkpoints_passed[1] = False
-            elif not any(self.checkpoints_passed):
-                self.checkpoints_passed[0] = True
-
         if on_checkpoint_2:
             if self.checkpoints_passed[2]:
                 self.checkpoints_passed[2] = False
-            elif self.checkpoints_passed[0] and not self.checkpoints_passed[1]:
+            elif self.checkpoints_passed[0]:
                 self.checkpoints_passed[1] = True
+        if on_checkpoint_3:
+            if not self.checkpoints_passed[1]:
+                self.checkpoints_passed[2] = False
+            else:
+                self.checkpoints_passed[2] = True
 
-        if (
-            on_checkpoint_3
-            and self.checkpoints_passed[1]
-            and not self.checkpoints_passed[2]
-        ):
-            self.checkpoints_passed[2] = True
-
-        if on_finish_line and self.checkpoints_passed[2]:
-            self.score += 1
-            self._register_high_score()
+        if on_finish_line:
+            if all(self.checkpoints_passed):
+                self.score += 1
+                self.message = "+1 Lap!"
+                self.message_timer = MESSAGE_FRAMES
             for i in range(3):
                 self.checkpoints_passed[i] = False
-            self.message, self.message_timer = "+1 Lap!", MESSAGE_FRAMES
 
     def draw(self, screen, font):
         score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))

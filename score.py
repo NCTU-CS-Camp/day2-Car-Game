@@ -55,10 +55,16 @@ def update_lap_progress(car, state):
     on_checkpoint_2 = CHECKPOINTS[1].collidepoint(car.x, car.y)
     on_checkpoint_3 = CHECKPOINTS[2].collidepoint(car.x, car.y)
 
+    if on_checkpoint_1:
+        state.checkpoints_passed[0] = True
+    if on_checkpoint_2:
+        state.checkpoints_passed[1] = True
+    if on_checkpoint_3:
+        state.checkpoints_passed[2] = True
 
-    skip_Q4_1 = True  # 如果你想先跳過 Q4-1 的部分，請把這個變數改成 True
+    enable_Q4_2 = True  # 如果你想 ... 的部分，請把這個變數改成 True
 
-    if not skip_Q4_1:
+    if not enable_Q4_2:
         """
         --------------------------------------------------------
         Q4-1. 通過 checkpoint 及 finish line
@@ -71,13 +77,6 @@ def update_lap_progress(car, state):
         --------------------------------------------------------
         """
         # Q4-1 begin
-        if on_checkpoint_1:
-            state.checkpoints_passed[0] = True
-        if on_checkpoint_2:
-            state.checkpoints_passed[1] = True
-        if on_checkpoint_3:
-            state.checkpoints_passed[2] = True
-
         if on_finish_line:
             state.score += 1
             state.message = "+1 Lap!"
@@ -87,21 +86,14 @@ def update_lap_progress(car, state):
         # Q4-1 end
     
     else:
-        if on_checkpoint_1:
-            state.checkpoints_passed[0] = True
-        if on_checkpoint_2:
-            state.checkpoints_passed[1] = True
-        if on_checkpoint_3:
-            state.checkpoints_passed[2] = True
         """
         --------------------------------------------------------
-        Q4-1. 通過 checkpoint 及 finish line
+        Q4-2. 處理車子通過 finish line
         Todo : 
-            1. 分別判斷車車通過3個檢查點的情況，並依照順序將其設為已通過
-            2. 通過終點後，將三個檢查點重設為尚未通過
-        Hint : 
-            1. 使用 if 判斷式進行判斷
-            2. 使用 for 迴圈重設所有 checkpoint
+               !!! 重要 !!! 
+               先把enable_Q4_2改成True，先跳過 Q4-1 的部分，完成這個接下來的部分
+               判斷車車是否為順向通過終點，若是的話就加分
+        Hint : all(state.checkpoints_passed) 可以判斷三個 checkpoint 是否都已通過
         --------------------------------------------------------
         """
         # Q4-2 begin

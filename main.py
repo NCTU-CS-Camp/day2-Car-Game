@@ -29,6 +29,27 @@ FPS = 30
 SPAWN_X, SPAWN_Y, SPAWN_ANGLE = 120, 480, 180
 
 
+def _show_q1_notice(track_front, track_back, car_image):
+    """
+    Q1 還沒完成時，開一個固定大小(800x600)的全黑視窗。
+    按關閉視窗或 ESC 即可結束。
+    """
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption("Car Game")
+
+    clock = pygame.time.Clock()
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                waiting = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                waiting = False
+
+        screen.fill((0, 0, 0))  # 全黑背景
+        pygame.display.flip()
+        clock.tick(FPS)
+
 def run():
     """
     # Pygame 啟動 !!!
@@ -50,6 +71,11 @@ def run():
     track_back = pygame.image.load(ASSETS_DIR / "track_back.png")
     car_image = pygame.image.load(ASSETS_DIR / "car.png")
     # Q1 end
+
+    if "__fill_in__" in (track_front, track_back, car_image):
+        _show_q1_notice(track_front, track_back, car_image)
+        pygame.quit()
+        return
 
     # 視窗大小、名稱設定
     screen = pygame.display.set_mode(track_front.get_size())

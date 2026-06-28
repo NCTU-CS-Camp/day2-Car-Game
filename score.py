@@ -87,6 +87,12 @@ def update_lap_progress(car, state):
         # Q4-1 end
     
     else:
+        if on_checkpoint_1:
+            state.checkpoints_passed[0] = True
+        if on_checkpoint_2:
+            state.checkpoints_passed[1] = True
+        if on_checkpoint_3:
+            state.checkpoints_passed[2] = True
         """
         --------------------------------------------------------
         Q4-1. 通過 checkpoint 及 finish line

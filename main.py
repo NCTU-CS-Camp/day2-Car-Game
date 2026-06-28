@@ -151,8 +151,8 @@ def run():
     update_lap_progress = getattr(score, "update_lap_progress", None)  # Q4
     update_high_score = getattr(score, "update_high_score", None)  # Q5
     GameState = getattr(score, "GameState", _FallbackGameState)
-    GearButtons = getattr(speed_and_boundary, "GearButtons", _FallbackGearButtons)  # Q6
-    handle_boundary = getattr(speed_and_boundary, "handle_boundary", None)  # Q7
+    GearButtons = getattr(speed_and_boundary, "GearButtons", _FallbackGearButtons)  # Q7
+    handle_boundary = getattr(speed_and_boundary, "handle_boundary", None)  # Q6
 
     # 視窗大小、名稱設定
     screen = pygame.display.set_mode(track_front.get_size())
@@ -174,8 +174,8 @@ def run():
             if event.type == pygame.QUIT:  # 關閉視窗
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # 滑鼠左鍵
-                new_speed = _safe("Q6 換檔按鈕", gear_buttons.handle_click, event.pos)
-                # 只有在拿到「真的速度數字」時才切換(Q6 沒寫完時會拿到 "__fill_in__")
+                new_speed = _safe("Q7 換檔按鈕", gear_buttons.handle_click, event.pos)
+                # 只有在拿到「真的速度數字」時才切換(Q7 沒寫完時會拿到 "__fill_in__")
                 if isinstance(new_speed, (int, float)):
                     car.set_max_speed(new_speed)  # 切換最高速
 
@@ -187,7 +187,19 @@ def run():
         # 計分與碰撞邏輯
         # 在這一幀可能讓分數歸零(撞牆)或改變之前，先記錄目前分數有沒有破紀錄
         _safe("Q5 最高分紀錄", update_high_score, state)
-        _safe("Q7 撞牆判定", handle_boundary, car, track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)
+
+        # Q6 還沒寫完時，裡面的判斷永遠成立(不會丟例外，_safe() 接不住)，
+        # 會每一幀都把車子送回起點。先記住呼叫前的狀態，呼叫完發現型別不對
+        # (代表 Q6 還沒寫完)就復原，這樣車子在 Q6 完成前可以照常移動、正常加速。
+        score_before = state.score
+        checkpoints_before = list(state.checkpoints_passed)
+        car_before = (car.x, car.y, car.angle, car.velocity, car.acceleration)
+        _safe("Q6 撞牆判定", handle_boundary, car, track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)
+        if not isinstance(state.score, int) or not isinstance(state.checkpoints_passed, list):
+            state.score = score_before
+            state.checkpoints_passed = checkpoints_before
+            car.x, car.y, car.angle, car.velocity, car.acceleration = car_before
+
         _safe("Q4 繞圈計分", update_lap_progress, car, state)
 
         # 畫面繪製
@@ -204,7 +216,7 @@ def run():
             screen.blit(message_text, (20, 92))
             state.message_timer -= 1  # 倒數計時,時間到就不再顯示
 
-        _safe("Q6 換檔按鈕繪製", gear_buttons.draw, screen, font)  # 換檔按鈕
+        _safe("Q7 換檔按鈕繪製", gear_buttons.draw, screen, font)  # 換檔按鈕
 
         # 更新顯示、控制幀率
         pygame.display.flip()

@@ -76,7 +76,7 @@ def run():
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # 滑鼠左鍵
                 new_speed = gear_buttons.handle_click(event.pos)  # 判斷是否點到換檔按鈕
-                if new_speed is not None:
+                if isinstance(new_speed, (int, float)):  # Q7 還沒寫完時可能回傳別的東西，這裡擋掉
                     car.set_max_speed(new_speed)  # 切換最高速
 
         # 鍵盤操控(Q2、Q3:W/S 加速倒車、J/K 轉向)
@@ -86,9 +86,21 @@ def run():
 
         # 計分與碰撞邏輯
         # 在這一幀可能讓分數歸零(撞牆)或改變之前，先記錄目前分數有沒有破紀錄
-        update_high_score(state)  # Q7:更新最高分紀錄
-        handle_boundary(car, track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # Q5:撞到邊界處理
-        update_lap_progress(car, state)  # Q6:順向繞圈計分
+        update_high_score(state)
+
+        # Q6 還沒寫完時，裡面的判斷永遠成立，會每一幀都把車子送回起點。
+        # 先記住呼叫前的狀態，呼叫完發現型別不對(代表 Q6 還沒寫完)就復原，
+        # 這樣車子在 Q6 完成前可以照常移動、正常加速，不會被卡住。
+        score_before = state.score
+        checkpoints_before = list(state.checkpoints_passed)
+        car_before = (car.x, car.y, car.angle, car.velocity, car.acceleration)
+        handle_boundary(car, track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)
+        if not isinstance(state.score, int) or not isinstance(state.checkpoints_passed, list):
+            state.score = score_before
+            state.checkpoints_passed = checkpoints_before
+            car.x, car.y, car.angle, car.velocity, car.acceleration = car_before
+
+        update_lap_progress(car, state)
 
         # 畫面繪製
         screen.blit(track_front, (0, 0))  # 賽道背景

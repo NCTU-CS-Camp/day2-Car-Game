@@ -5,13 +5,11 @@
 car.py 裡面的物理引擎(怎麼加速、轉彎、判斷撞牆)都已經寫好了，
 你完全不需要知道它裡面怎麼算，只要知道「呼叫哪個函式、給什麼參數」就會動。
 
-題目分散在不同檔案裡，main_blank.py 自己只有 Q1：
-- main_blank.py               Q1 : 載入圖片
-- controls_blank.py           Q2、Q3 : W/S 加速倒車、J/K 轉向
-- speed_and_boundary_blank.py Q4、Q5 : 滑鼠變速按鈕、撞到賽道邊界
-- score_blank.py              Q6、Q7 : 順向繞圈計分、最高分紀錄
-
-全部寫完之後執行 `python3 main_blank.py`，應該要跟 `main.py` 玩起來一樣。
+題目分散在不同檔案裡，main.py 自己只有 Q1：
+- main.py               Q1 : 載入圖片
+- controls.py           Q2、Q3 : W/S 加速倒車、J/K 轉向
+- score.py              Q4、Q5 : 順向繞圈計分、最高分紀錄
+- speed_and_boundary.py Q6、Q7 : 滑鼠變速按鈕、撞到賽道邊界
 --------------------------------------------------------
 """
 
@@ -108,9 +106,16 @@ def run():
 
         # 計分與碰撞邏輯
         # 在這一幀可能讓分數歸零(撞牆)或改變之前，先記錄目前分數有沒有破紀錄
-        update_high_score(state)  # Q7:更新最高分紀錄
-        handle_boundary(car, track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # Q5:撞到邊界處理
-        update_lap_progress(car, state)  # Q6:順向繞圈計分
+        update_high_score(state)  # Q5:更新最高分紀錄
+        score_before = state.score
+        checkpoints_before = list(state.checkpoints_passed)
+        car_before = (car.x, car.y, car.angle, car.velocity, car.acceleration)
+        handle_boundary(car, track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # Q6:撞到邊界處理
+        if not isinstance(state.score, int) or not isinstance(state.checkpoints_passed, list):
+            state.score = score_before
+            state.checkpoints_passed = checkpoints_before
+            car.x, car.y, car.angle, car.velocity, car.acceleration = car_before
+        update_lap_progress(car, state)  # Q4:順向繞圈計分
 
         # 畫面繪製
         screen.blit(track_front, (0, 0))  # 賽道背景

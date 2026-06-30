@@ -27,7 +27,7 @@ FPS = 30
 SPAWN_X, SPAWN_Y, SPAWN_ANGLE = 120, 480, 180
 
 
-def _show_q1_notice(track_front, track_back, car_image):
+def _show_q1_notice():
     """
     Q1 還沒完成時，開一個固定大小(800x600)的全黑視窗。
     按關閉視窗或 ESC 即可結束。
@@ -71,7 +71,7 @@ def run():
     # Q1 end
 
     if "__fill_in__" in (track_front, track_back, car_image):
-        _show_q1_notice(track_front, track_back, car_image)
+        _show_q1_notice()
         pygame.quit()
         return
 

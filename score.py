@@ -35,6 +35,34 @@ class GameState:
         self.message = ""
         self.message_timer = 0
         self.checkpoints_passed = [False, False, False]
+        self.show_checkpoints = False  # 是否要在畫面上顯示 checkpoint 的位置
+
+def draw_checkpoints(screen, font, state):
+    """
+    --------------------------------------------------------
+    #### 功能 : 在畫面上畫出 checkpoint 的位置，並顯示是否已通過
+    --------------------------------------------------------
+    #### 參數
+    - screen : pygame 的畫面物件
+    - font : pygame 的字型物件
+    - state : GameState 物件
+    --------------------------------------------------------
+    #### 回傳值
+    - 無(直接修改 state)
+    --------------------------------------------------------
+    """
+    for i, checkpoint in enumerate(CHECKPOINTS):
+        passed = state.checkpoints_passed[i]
+        color = (0, 220, 0) if passed else (255, 80, 80)
+
+        pygame.draw.rect(screen, color, checkpoint, 4)
+
+        status = "T" if passed else "F"
+        text = font.render(f"CP{i + 1}: {status}", True, color)
+        text_rect = text.get_rect(center=checkpoint.center)
+        background_rect = text_rect.inflate(12, 6)
+        pygame.draw.rect(screen, (0, 0, 0), background_rect)
+        screen.blit(text, text_rect)
 
 
 def update_lap_progress(car, state):
@@ -55,57 +83,68 @@ def update_lap_progress(car, state):
     on_checkpoint_2 = CHECKPOINTS[1].collidepoint(car.x, car.y)
     on_checkpoint_3 = CHECKPOINTS[2].collidepoint(car.x, car.y)
 
+    """
+    --------------------------------------------------------
+    Q4-1. 通過 checkpoint
+    Todo : 
+        1. 顯示 checkpoint 的位置，方便測試
+        2. 分別判斷車車通過3個檢查點的情況，並依照順序將其設為已通過
+    Hint : 
+        1. show_checkpoints 可以控制是否要畫出 checkpoint
+        2. state.checkpoints_passed[0] 表示 CP1 是否已通過
+    --------------------------------------------------------
+    """
+    # Q4-1 begin
+    "__fill_in__"  # 在地圖上顯示 checkpoint 的位置，方便測試
+    if on_checkpoint_1:
+        "__fill_in__"
+    if on_checkpoint_2:
+        "__fill_in__"
+    if on_checkpoint_3:
+        "__fill_in__"
+    # Q4-1 end
 
-    skip_Q4_1 = False  # 如果你想先跳過 Q4-1 的部分，請把這個變數改成 True
+    enable_Q4_3 = False  # 如果你想 ... 的部分，請把這個變數改成 True
 
-    if not skip_Q4_1:
+    if not enable_Q4_3:
         """
         --------------------------------------------------------
-        Q4-1. 通過 checkpoint 及 finish line
-        Todo : 
-            1. 分別判斷車車通過3個檢查點的情況，並依照順序將其設為已通過
-            2. 通過終點後，將三個檢查點重設為尚未通過
+        Q4-2. 通過 finish line
+        Todo :通過終點後，分數增加，並將三個檢查點重設為尚未通過
         Hint : 
-            1. 使用 if 判斷式進行判斷
+            1. state.score 表示目前分數
             2. 使用 for 迴圈重設所有 checkpoint
-        --------------------------------------------------------
-        """
-        # Q4-1 begin
-        if on_checkpoint_1:
-            state.checkpoints_passed[0] = True
-        if "__fill_in__":    # 位於 CP2 時，將 CP2 設為已通過
-            "__fill_in__"
-        if "__fill_in__":    # 位於 CP3 時，將 CP3 設為已通過
-            "__fill_in__"
-
-        if "__fill_in__":    # 位於終點時，將三個 checkpoint 重設為尚未通過並加分
-            state.score += 1
-            state.message = "+1 Lap!"
-            state.message_timer = MESSAGE_FRAMES
-            "__fill_in__"    # for 迴圈重設所有 checkpoint
-                "__fill_in__"
-        # Q4-1 end
-
-    else:
-        """
-        --------------------------------------------------------
-        Q4-2. 處理車子通過 finish line
-        Todo : 
-               !!! 重要 !!! 
-               把 skip_Q4_1 改成 True，先跳過 Q4-1 的部分，完成這個接下來的部分
-               判斷車車是否為順向通過終點，若是的話就加分
-        Hint : all(state.checkpoints_passed) 可以判斷三個 checkpoint 是否都已通過
         --------------------------------------------------------
         """
         # Q4-2 begin
         if on_finish_line:
-            if "__fill_in__":    # 如果三個 checkpoint 都已通過，表示順向通過終點
+            "__fill_in__"
+            state.message = "+1 Lap!"
+            state.message_timer = MESSAGE_FRAMES
+            # TODO : 將三個檢查點重設為尚未通過
+
+        # Q4-2 end
+
+    else:
+        """
+        --------------------------------------------------------
+        Q4-3. 處理車子通過 finish line
+        Todo : 
+               !!! 重要 !!! 
+               先把enable_Q4_3改成True，先跳過 Q4-1 的部分，完成這個接下來的部分
+               判斷車車是否為順向通過終點，若是的話就加分
+        Hint : all(state.checkpoints_passed) 可以判斷三個 checkpoint 是否都已通過
+        --------------------------------------------------------
+        """
+        # Q4-3 begin
+        if on_finish_line:
+            if "__fill_in__":
                 state.score += 1
                 state.message = "+1 Lap!"
                 state.message_timer = MESSAGE_FRAMES
             for i in range(3):
                 state.checkpoints_passed[i] = False
-        # Q4-2 end
+        # Q4-3 end
 
         """
         --------------------------------------------------------
@@ -128,6 +167,7 @@ def update_lap_progress(car, state):
         if on_checkpoint_3:
             if "__fill_in__":    # 如果 CP2 已通過，將 CP3 設為已通過
                 state.checkpoints_passed[2] = True
+        
         # Q4-3 end
 
 def update_high_score(state):
@@ -150,5 +190,6 @@ def update_high_score(state):
     --------------------------------------------------------
     """
     # Q5 begin
+    # TODO : 如果這次的分數破紀錄，更新最高分
     
     # Q5 end

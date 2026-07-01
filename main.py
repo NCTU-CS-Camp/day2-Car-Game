@@ -57,26 +57,36 @@ def run():
 
     """
     --------------------------------------------------------
-    Q1. 把底下三個 "__fill_in__" 換成讀取圖片的程式
-    Todo : 讀取車子圖片、賽道前景圖、賽道底圖(碰撞用)
-    Hint : 用 pygame.image.load(路徑)
-           路徑可以用 ASSETS_DIR / "檔名" 組出來
-           三個檔名分別是 "track_front.png"、"track_back.png"、"car.png"
+    Q1. 把底下三個 "__fill_in__" 換成「讀取圖片」的程式
     --------------------------------------------------------
+    寫法: pygame.image.load(ASSETS_DIR / "檔名")
+        - ASSETS_DIR 是 assets 資料夾的位置(上面已設定好)，
+          用斜線 / 接上檔名，就是完整路徑。
+        - 檔名要用雙引號 " " 包起來(字串)，例如寫成 "xxx.png"，
+          不能寫沒引號的 xxx.png (會被當成變數而出錯)。
+
+    寫法示意(檔名自己填):  img = pygame.image.load(ASSETS_DIR / "圖檔.png")
+
+    三個要讀的檔名:
+        - "track_front.png" 賽道前景圖(畫面看到的賽道)
+        - "track_back.png"  賽道底圖(判斷有沒有撞牆用)
+        - "car.png"         車子圖片
+    --------------------------------------------------------
+    (變數的 img_ 前綴代表「這個變數存的是影像」)
     """
     # Q1 begin
-    track_front = "__fill_in__"
-    track_back = "__fill_in__"
-    car_image = "__fill_in__"
+    img_track_front = "__fill_in__"
+    img_track_back = "__fill_in__"
+    img_car = "__fill_in__"
     # Q1 end
 
-    if "__fill_in__" in (track_front, track_back, car_image):
+    if "__fill_in__" in (img_track_front, img_track_back, img_car):
         _show_q1_notice()
         pygame.quit()
         return
 
     # 視窗大小、名稱設定
-    screen = pygame.display.set_mode(track_front.get_size())
+    screen = pygame.display.set_mode(img_track_front.get_size())
     pygame.display.set_caption("Car Game (W/S Accel, J/K Steer)")
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 36)
@@ -110,7 +120,7 @@ def run():
         score_before = state.score
         checkpoints_before = list(state.checkpoints_passed)
         car_before = (car.x, car.y, car.angle, car.velocity, car.acceleration)
-        handle_boundary(car, track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # Q6:撞到邊界處理
+        handle_boundary(car, img_track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # Q6:撞到邊界處理
         if not isinstance(state.score, int) or not isinstance(state.checkpoints_passed, list):
             state.score = score_before
             state.checkpoints_passed = checkpoints_before
@@ -118,10 +128,10 @@ def run():
         update_lap_progress(car, state)  # Q4:順向繞圈計分
 
         # 畫面繪製
-        screen.blit(track_front, (0, 0))  # 賽道背景
+        screen.blit(img_track_front, (0, 0))  # 賽道背景
         if state.show_checkpoints:
             draw_checkpoints(screen, font, state)  # 畫出 checkpoint 的位置
-        car.draw(screen, car_image)  # 車子
+        car.draw(screen, img_car)  # 車子
 
         # 分數與訊息文字
         score_text = font.render(f"Score: {state.score}", True, (255, 255, 255))

@@ -50,7 +50,7 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle, timer
         state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES  # 顯示撞牆提示，並設定要顯示幾個 frame
         car.reset(spawn_x, spawn_y, spawn_angle)  # 車子回到起點，速度跟角度也重設
         if timer is not None:
-            timer.crash()  # 從本次所有圈取最快的更新紀錄，然後重置碼表
+            timer.reset()  # 從本次所有圈取最快的更新紀錄，然後重置碼表
     # Q7 end
 
 

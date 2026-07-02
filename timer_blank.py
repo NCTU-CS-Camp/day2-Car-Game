@@ -77,8 +77,11 @@ class LapTimer:
         - 清空本次資料，碼表回到 idle
         """
         if self._laps:
-            run_best = min(self._laps)
-            if self.best_lap is None or run_best < self.best_lap:
+            try:
+                run_best = min(self._laps)
+            except TypeError:
+                run_best = None  # Q6 未完成時 _laps 可能含非數字
+            if run_best is not None and (self.best_lap is None or run_best < self.best_lap):
                 self.best_lap = run_best
 
         self.is_running = False

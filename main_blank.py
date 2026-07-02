@@ -24,7 +24,7 @@ from car import Car
 from controls_blank import handle_movement
 from score_blank import GameState, update_high_score, update_lap_progress
 from speed_and_boundary_blank import GearButtons, handle_boundary
-from timer import LapTimer
+from timer_blank import LapTimer
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 FPS = 30
@@ -84,7 +84,8 @@ def run():
 
         # 鍵盤操控(Q2、Q3:W/S 加速倒車、J/K 轉向)
         keys = pygame.key.get_pressed()
-        lap_timer.update_key(any(keys))  # 偵測第一個按鍵，啟動碼表
+        if not lap_timer.is_running and any(keys):  # 偵測第一個按鍵，啟動碼表
+            lap_timer.lap()
         handle_movement(keys, car)
         car.update()  # 依加速度與角度更新車子位置
 
@@ -107,7 +108,10 @@ def run():
         score_before_lap = state.score
         update_lap_progress(car, state)
         if state.score > score_before_lap:  # 分數增加 = 通過終點線完成一圈
-            lap_timer.lap_completed()
+            try:
+                lap_timer.lap()  # Q6 寫完後，這裡會記錄圈速
+            except TypeError:
+                pass  # Q6 還沒寫完時 lap_time 可能不是數字，先忽略
 
         # 畫面繪製
         screen.blit(track_front, (0, 0))  # 賽道背景

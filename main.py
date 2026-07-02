@@ -50,7 +50,8 @@ def run():
 
         # 鍵盤操控
         keys = pygame.key.get_pressed()
-        lap_timer.update_key(any(keys))  # 偵測第一個按鍵，啟動碼表
+        if not lap_timer.is_running and any(keys):  # 偵測第一個按鍵，啟動碼表
+            lap_timer.lap()
         if keys[pygame.K_w]:
             car.set_accel(ACCEL)  # W:前進加速
         elif keys[pygame.K_s]:
@@ -67,13 +68,13 @@ def run():
         if car.collision(track_back):
             race.handle_crash()  # 記錄撞車
             car.reset(SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # 車子回到起點
-            lap_timer.crash()  # 從本次圈速取最快的更新紀錄，然後重置碼表
+            lap_timer.reset()  # 從本次圈速取最快的更新紀錄，然後重置碼表
 
         # 更新比賽狀態(計時、進度等)；偵測是否完成一圈
         score_before = race.score
         race.update(car)
         if race.score > score_before:  # 分數增加 = 通過終點線完成一圈
-            lap_timer.lap_completed()
+            lap_timer.lap()
 
         # 畫面繪製(由下而上依序疊圖)
         screen.blit(track_front, (0, 0))  # 賽道背景

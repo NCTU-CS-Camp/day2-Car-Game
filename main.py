@@ -21,10 +21,12 @@ from car import Car
 from controls import handle_movement
 from score import CHECKPOINTS, GameState, draw_checkpoints, update_high_score, update_lap_progress
 from speed_and_boundary import GearButtons, handle_boundary
+from timer import LapTimer
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 FPS = 30
 SPAWN_X, SPAWN_Y, SPAWN_ANGLE = 120, 480, 180
+FILL_IN = "__fill_in__"
 
 
 def _show_q1_notice():
@@ -81,7 +83,7 @@ def run():
     img_car = pygame.image.load(ASSETS_DIR / "car.png")
     # Q1 end
 
-    if "__fill_in__" in (img_track_front, img_track_back, img_car):
+    if FILL_IN in (img_track_front, img_track_back, img_car):
         _show_q1_notice()
         pygame.quit()
         return
@@ -97,6 +99,7 @@ def run():
     gear_buttons = GearButtons(screen.get_width())  # 換檔按鈕
     car.set_max_speed(gear_buttons.current_speed())  # 依目前檔位設定最高速
     state = GameState()  # 分數、最高分、訊息等遊戲狀態
+    lap_timer = LapTimer()  # 碼表
 
     # 遊戲畫面更新和遊戲主要邏輯的運作
     running = True
@@ -112,6 +115,8 @@ def run():
 
         # 鍵盤操控(Q2、Q3:W/S 加速倒車、J/K 轉向)
         keys = pygame.key.get_pressed()
+        if not lap_timer.is_running and any(keys):  # 偵測第一個按鍵，啟動碼表
+            lap_timer.lap()
         handle_movement(keys, car)
         car.update()  # 依加速度與角度更新車子位置
 
@@ -121,12 +126,20 @@ def run():
         score_before = state.score
         checkpoints_before = list(state.checkpoints_passed)
         car_before = (car.x, car.y, car.angle, car.velocity, car.acceleration)
-        handle_boundary(car, img_track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # Q6:撞到邊界處理
+        timer_before = (lap_timer.is_running, lap_timer._lap_start, list(lap_timer._laps))
+        handle_boundary(car, img_track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # Q7:撞到邊界處理
         if not isinstance(state.score, int) or not isinstance(state.checkpoints_passed, list):
             state.score = score_before
             state.checkpoints_passed = checkpoints_before
             car.x, car.y, car.angle, car.velocity, car.acceleration = car_before
+            lap_timer.is_running, lap_timer._lap_start, lap_timer._laps = timer_before
+        score_before_lap = state.score
         update_lap_progress(car, state)  # Q4:順向繞圈計分
+        if state.score > score_before_lap:  # 分數增加 = 通過終點線完成一圈
+            try:
+                lap_timer.lap()  # Q6 寫完後，這裡會記錄圈速
+            except TypeError:
+                pass  # Q6 還沒寫完時 lap_time 可能不是數字，先忽略
 
         # 畫面繪製
         screen.blit(img_track_front, (0, 0))  # 賽道背景
@@ -145,6 +158,12 @@ def run():
             state.message_timer -= 1  # 倒數計時,時間到就不再顯示
 
         gear_buttons.draw(screen, font)  # 換檔按鈕
+
+        # 碼表顯示
+        lap_text = font.render(f"Lap:  {lap_timer.current_lap_str()}", True, (255, 255, 255))
+        best_text = font.render(f"Best: {lap_timer.best_lap_str()}", True, (255, 220, 0))
+        screen.blit(lap_text, (20, 128))
+        screen.blit(best_text, (20, 164))
 
         # 更新顯示、控制幀率
         pygame.display.flip()

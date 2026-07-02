@@ -1,6 +1,6 @@
 """
 --------------------------------------------------------
-#### 這個檔案負責「滑鼠變速按鈕」跟「撞到賽道邊界」(Q6、Q7)
+#### 這個檔案負責「滑鼠變速按鈕」跟「撞到賽道邊界」(Q7、Q8)
 --------------------------------------------------------
 """
 
@@ -31,7 +31,7 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     """
     """
     --------------------------------------------------------
-    Q6. 完成撞到賽道邊界要做的事
+    Q7. 完成撞到賽道邊界要做的事
     Todo : 呼叫 car.collision(track_back) 檢查車子是不是撞到賽道外。
            如果撞到了：
              1. 把 state.score 設成 0
@@ -42,13 +42,13 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
            你不需要知道它怎麼判斷撞牆，只要拿它的回傳值寫 if 就好
     --------------------------------------------------------
     """
-    # Q6 begin
+    # Q7 begin
     if car.collision(track_back):  # 檢查車子是不是撞到賽道外
         state.score = 0  # 分數歸零
         state.checkpoints_passed = [False, False, False]  # 三個檢查點都重設成沒通過
         state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES  # 顯示撞牆提示，並設定要顯示幾個 frame
         car.reset(spawn_x, spawn_y, spawn_angle)  # 車子回到起點，速度跟角度也重設
-    # Q6 end
+    # Q7 end
 
 
 class GearButtons:
@@ -91,7 +91,7 @@ class GearButtons:
         """
         """
         --------------------------------------------------------
-        Q7. 完成滑鼠點擊變速按鈕的判斷
+        Q8. 完成滑鼠點擊變速按鈕的判斷
         Todo : 找出滑鼠點到了 self.rects 裡的第幾個按鈕，
                把 self.current_gear 換成那個編號，
                並回傳新的速度(self.current_speed())。
@@ -100,13 +100,13 @@ class GearButtons:
                用 self.rects[i].collidepoint(pos) 判斷滑鼠是不是點在這個按鈕裡面
         --------------------------------------------------------
         """
-        # Q7 begin
+        # Q8 begin
         for i in range(len(self.rects)):  # 把每個按鈕的編號 0、1、2 依序拿出來檢查
             if self.rects[i].collidepoint(pos):  # 判斷滑鼠是不是點在第 i 個按鈕裡面
                 self.current_gear = i  # 把目前檔位換成第 i 個
                 return self.current_speed()  # 回傳這個檔位對應的最高速度
         return None  # 三個按鈕都沒點到，回傳 None
-        # Q7 end
+        # Q8 end
 
     def draw(self, screen, font):
         for i, rect in enumerate(self.rects):

@@ -42,13 +42,10 @@ class LapTimer:
         --------------------------------------------------------
         Q6. 完成 lap() 在 running 狀態下的邏輯（idle 那段已經寫好了）
         Todo : 碼表已在計時時：
-                1. 把 lap_time 算出來：(now - self._lap_start) / 1000.0
+                1. 把 lap_time 算出來：(現在時間 - 開始時間) / 1000.0
                    （now 跟 self._lap_start 都是毫秒，除以 1000 換成秒）
                 2. 如果 self.best_lap 是 None，或 lap_time 比 self.best_lap 小，
                    就把 self.best_lap 更新成 lap_time
-        Hint : - 第 1 格：(now - self._lap_start) / 1000.0
-               - 第 2 格（if 條件）：lap_time < self.best_lap
-               - 第 3 格（if 內容）：self.best_lap = lap_time
         --------------------------------------------------------
         """
         # Q6 begin

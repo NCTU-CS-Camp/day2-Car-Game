@@ -68,6 +68,19 @@ class LapTimer:
         self._lap_start = None
         self._laps = []
 
+    # ── 向下相容 alias（供 main.py / main_blank.py 使用）──
+    def update_key(self, any_key_pressed: bool) -> None:
+        if not self.is_running and any_key_pressed:
+            self.lap()
+
+    def lap_completed(self) -> "float | None":
+        if self.is_running:
+            return self.lap()
+        return None
+
+    def crash(self) -> None:
+        self.reset()
+
     # ── 顯示用 ────────────────────────────────────────────
 
     def current_lap_seconds(self) -> float:

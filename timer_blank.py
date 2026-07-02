@@ -35,22 +35,23 @@ class LapTimer:
         --------------------------------------------------------
         #### 回傳值
         - 第一次按下（啟動碼表）：回傳 None
-        - 之後每次按下（過終點）：回傳這圈花了幾秒（float）
+        - 之後每次過終點：回傳這圈花了幾秒（float）
         --------------------------------------------------------
         """
         """
         --------------------------------------------------------
-        Q1. 完成 lap() 在 running 狀態下的邏輯（idle 那段已經寫好了）
+        Q6. 完成 lap() 在 running 狀態下的邏輯（idle 那段已經寫好了）
         Todo : 碼表已在計時時：
-                1. 計算這圈花了幾秒，存進 lap_time
-                    （now 跟 self._lap_start 都是毫秒，記得換算成秒）
-                2. 如果這圈比目前的 self.best_lap 還快，把 self.best_lap 更新成 lap_time
-        Hint : - 經過的秒數算法可以參考下面 current_lap_seconds() 的寫法
-            - 「這圈比較快」代表數字比較小，用 < 比較
-            - 更新最快圈：self.best_lap = ？
+                1. 把 lap_time 算出來：(now - self._lap_start) / 1000.0
+                   （now 跟 self._lap_start 都是毫秒，除以 1000 換成秒）
+                2. 如果 self.best_lap 是 None，或 lap_time 比 self.best_lap 小，
+                   就把 self.best_lap 更新成 lap_time
+        Hint : - 第 1 格：(now - self._lap_start) / 1000.0
+               - 第 2 格（if 條件）：lap_time < self.best_lap
+               - 第 3 格（if 內容）：self.best_lap = lap_time
         --------------------------------------------------------
         """
-        # Q1 begin
+        # Q6 begin
         now = pygame.time.get_ticks()          # 1. 取得目前時間（毫秒）
 
         if not self.is_running:      # 碼表還沒啟動（idle 狀態）
@@ -67,7 +68,7 @@ class LapTimer:
             "__fill_in__"                 #     更新最快圈紀錄
 
         return lap_time              # 回傳這圈的秒數
-        # Q1 end
+        # Q6 end
 
     def reset(self) -> None:
         """

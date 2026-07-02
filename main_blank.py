@@ -95,7 +95,7 @@ def run():
 
         # Q7 還沒寫完時，裡面的判斷永遠成立，會每一幀都把車子送回起點。
         # 先記住呼叫前的狀態，呼叫完發現型別不對(代表 Q7 還沒寫完)就復原，
-        # 這樣車子在 Q6 完成前可以照常移動、正常加速，不會被卡住。
+        # 這樣車子在 Q7 完成前可以照常移動、正常加速，不會被卡住。
         score_before = state.score
         checkpoints_before = list(state.checkpoints_passed)
         car_before = (car.x, car.y, car.angle, car.velocity, car.acceleration)

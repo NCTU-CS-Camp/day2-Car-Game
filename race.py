@@ -15,7 +15,7 @@ CHECKPOINTS = [
 ]
 MESSAGE_FRAMES = 30  # "+1 Lap!" / "Crashed!" 訊息要停留幾個 frame
 
-GEARS = [("1", 4), ("2", 7), ("3", 10)]  # (按鈕文字, 最高速度)
+GEARS = [("1", 4), ("2", 7), ("3", 10), ("4", 20)]  # (按鈕文字, 最高速度)
 DEFAULT_GEAR = 1
 BUTTON_SIZE = (50, 40)
 BUTTON_GAP = 10

@@ -4,6 +4,7 @@ import pygame
 
 from car import ACCEL, ROTATE_SPEED, Car
 from race import GearButtons, RaceState
+from timer import LapTimer
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 FPS = 30
@@ -33,6 +34,7 @@ def run():
     gear_buttons = GearButtons(screen.get_width())  # 換檔按鈕
     car.set_max_speed(gear_buttons.current_speed())  # 依目前檔位設定最高速
     race = RaceState()  # 計時、圈數等比賽狀態
+    lap_timer = LapTimer()  # 碼表
 
     # 遊戲畫面更新和遊戲主要邏輯的運作
     running = True
@@ -48,6 +50,7 @@ def run():
 
         # 鍵盤操控
         keys = pygame.key.get_pressed()
+        lap_timer.update_key(any(keys))  # 偵測第一個按鍵，啟動碼表
         if keys[pygame.K_w]:
             car.set_accel(ACCEL)  # W:前進加速
         elif keys[pygame.K_s]:
@@ -64,15 +67,25 @@ def run():
         if car.collision(track_back):
             race.handle_crash()  # 記錄撞車
             car.reset(SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # 車子回到起點
+            lap_timer.crash()  # 從本次圈速取最快的更新紀錄，然後重置碼表
 
-        # 更新比賽狀態(計時、進度等)
+        # 更新比賽狀態(計時、進度等)；偵測是否完成一圈
+        score_before = race.score
         race.update(car)
+        if race.score > score_before:  # 分數增加 = 通過終點線完成一圈
+            lap_timer.lap_completed()
 
         # 畫面繪製(由下而上依序疊圖)
         screen.blit(track_front, (0, 0))  # 賽道背景
         car.draw(screen, car_image)  # 車子
         race.draw(screen, font)  # 比賽資訊文字
         gear_buttons.draw(screen, font)  # 換檔按鈕
+
+        # 碼表顯示
+        lap_text = font.render(f"Lap:  {lap_timer.current_lap_str()}", True, (255, 255, 255))
+        best_text = font.render(f"Best: {lap_timer.best_lap_str()}", True, (255, 220, 0))
+        screen.blit(lap_text, (20, 128))
+        screen.blit(best_text, (20, 164))
 
         # 更新顯示、控制幀率
         pygame.display.flip()

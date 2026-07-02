@@ -6,7 +6,7 @@
 
 import pygame
 
-GEARS = [("1", 4), ("2", 7), ("3", 10)]  # (按鈕文字, 最高速度)
+GEARS = [("1", 4), ("2", 7), ("3", 10), ("4", 20)]  # (按鈕文字, 最高速度)
 DEFAULT_GEAR = 1
 BUTTON_SIZE = (50, 40)
 BUTTON_GAP = 10
@@ -14,7 +14,7 @@ TOP_RIGHT_MARGIN = 20
 MESSAGE_FRAMES = 30  # "Crashed!" 訊息要停留幾個 frame
 
 
-def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
+def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle, timer=None):
     """
     --------------------------------------------------------
     #### 功能 : 檢查車子是否撞到賽道邊界，撞到的話重置分數/進度跟車子位置
@@ -24,6 +24,7 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     - track_back : 賽道碰撞用的底圖
     - state : GameState 物件(記錄 score / checkpoints_passed / message / message_timer)
     - spawn_x, spawn_y, spawn_angle : 車子重生時的座標跟角度
+    - timer : LapTimer 物件（可選）；撞牆時會自動呼叫 timer.crash() 重置碼表
     --------------------------------------------------------
     #### 回傳值
     - 無(直接修改 state 跟 car)
@@ -48,6 +49,8 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
         "__fill_in__"  # 三個檢查點都重設成沒通過
         state.message, state.message_timer = "Crashed!", MESSAGE_FRAMES  # 顯示撞牆提示，並設定要顯示幾個 frame
         car.reset(spawn_x, spawn_y, spawn_angle)  # 車子回到起點，速度跟角度也重設
+        if timer is not None:
+            timer.crash()  # 從本次所有圈取最快的更新紀錄，然後重置碼表
     # Q6 end
 
 

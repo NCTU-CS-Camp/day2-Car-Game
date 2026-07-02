@@ -57,6 +57,17 @@ def run():
     # car_image = pygame.image.load(ASSETS_DIR / "car.png")
     # Q1 end
 
+    # Q1 還沒寫完時，用空白 surface 代替，讓後面的題目還是能跑
+    if not hasattr(track_front, "get_size"):
+        track_front = pygame.Surface((1600, 800))
+        track_front.fill((40, 40, 40))
+    if not hasattr(track_back, "get_size"):
+        track_back = pygame.Surface((1600, 800))
+        track_back.fill((0, 0, 0))
+    if not hasattr(car_image, "get_size"):
+        car_image = pygame.Surface((30, 50))
+        car_image.fill((255, 50, 50))
+
     # 視窗大小、名稱設定
     screen = pygame.display.set_mode(track_front.get_size())
     pygame.display.set_caption("Car Game (W/S Accel, J/K Steer)")
@@ -95,15 +106,17 @@ def run():
 
         # Q7 還沒寫完時，裡面的判斷永遠成立，會每一幀都把車子送回起點。
         # 先記住呼叫前的狀態，呼叫完發現型別不對(代表 Q7 還沒寫完)就復原，
-        # 這樣車子在 Q7 完成前可以照常移動、正常加速，不會被卡住。
+        # 這樣車子在 Q7 完成前可以照常移動、正常加速、正常計時，不會被卡住。
         score_before = state.score
         checkpoints_before = list(state.checkpoints_passed)
         car_before = (car.x, car.y, car.angle, car.velocity, car.acceleration)
+        timer_before = (lap_timer.is_running, lap_timer._lap_start, list(lap_timer._laps))
         handle_boundary(car, track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE, timer=lap_timer)
         if not isinstance(state.score, int) or not isinstance(state.checkpoints_passed, list):
             state.score = score_before
             state.checkpoints_passed = checkpoints_before
             car.x, car.y, car.angle, car.velocity, car.acceleration = car_before
+            lap_timer.is_running, lap_timer._lap_start, lap_timer._laps = timer_before
 
         score_before_lap = state.score
         update_lap_progress(car, state)

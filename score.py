@@ -26,6 +26,7 @@ class GameState:
     - high_score : 這次執行期間的最高分
     - message / message_timer : 畫面上顯示的提示文字跟剩餘 frame 數
     - checkpoints_passed : CP1、CP2、CP3 是否已依序通過
+    - show_checkpoints : 是否要在畫面上顯示 checkpoint 的位置
     --------------------------------------------------------
     """
 

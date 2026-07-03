@@ -105,7 +105,7 @@ def update_lap_progress(car, state):
         "__fill_in__"
     # Q4-1 end
 
-    enable_Q4_3 = False  # 如果你想 ... 的部分，請把這個變數改成 True
+    enable_Q4_3 = True  # 如果你想 ... 的部分，請把這個變數改成 True
 
     if not enable_Q4_3:
         """
@@ -119,10 +119,11 @@ def update_lap_progress(car, state):
         """
         # Q4-2 begin
         if on_finish_line:
-            "__fill_in__"
+            state.score += 1
             state.message = "+1 Lap!"
             state.message_timer = MESSAGE_FRAMES
-            # TODO : 將三個檢查點重設為尚未通過
+            for i in range(3):
+                state.checkpoints_passed[i] = False
 
         # Q4-2 end
 
@@ -192,5 +193,5 @@ def update_high_score(state):
     """
     # Q5 begin
     # TODO : 如果這次的分數破紀錄，更新最高分
-    
+
     # Q5 end

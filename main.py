@@ -113,7 +113,7 @@ def run():
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # 滑鼠左鍵
                 new_speed = gear_buttons.handle_click(event.pos)  # 判斷是否點到換檔按鈕
-                if isinstance(new_speed, (int, float))::
+                if isinstance(new_speed, (int, float)):
                     car.set_max_speed(new_speed)  # 切換最高速
 
         # 鍵盤操控(Q2、Q3:W/S 加速倒車、J/K 轉向)

@@ -101,11 +101,11 @@ class GearButtons:
         --------------------------------------------------------
         """
         # Q8 begin
-        for i in range(len(self.rects)):  # 把每個按鈕的編號 0、1、2 依序拿出來檢查
+        for i in range(len(self.rects)):  # 把每個按鈕的編號 0、1、2、3 依序拿出來檢查
             if self.rects[i].collidepoint(pos):  # 判斷滑鼠是不是點在第 i 個按鈕裡面
                 self.current_gear = i  # 把目前檔位換成第 i 個
                 return self.current_speed()  # 回傳這個檔位對應的最高速度
-        return None  # 三個按鈕都沒點到，回傳 None
+        return None  # 四個按鈕都沒點到，回傳 None
         # Q8 end
 
     def draw(self, screen, font):

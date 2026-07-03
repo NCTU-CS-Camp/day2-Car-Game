@@ -6,7 +6,7 @@
 
 import pygame
 
-GEARS = [("1", 4), ("2", 7), ("3", 10)]  # (按鈕文字, 最高速度)
+GEARS = [("1", 4), ("2", 7), ("3", 10), ("4", 20)]  # (按鈕文字, 最高速度)
 DEFAULT_GEAR = 1
 BUTTON_SIZE = (50, 40)
 BUTTON_GAP = 10
@@ -66,11 +66,11 @@ class GearButtons:
     def __init__(self, screen_width):
         button_w, button_h = BUTTON_SIZE  # 每個按鈕的寬、高
         right_edge = screen_width - TOP_RIGHT_MARGIN  # 最右邊按鈕的右邊界(螢幕寬度減掉留白)
-        left_edge = right_edge - len(GEARS) * button_w - (len(GEARS) - 1) * BUTTON_GAP  # 3 個按鈕靠右排，往左推算出第一個按鈕的左邊界
+        left_edge = right_edge - len(GEARS) * button_w - (len(GEARS) - 1) * BUTTON_GAP  # 4 個按鈕靠右排，往左推算出第一個按鈕的左邊界
         self.rects = [
             pygame.Rect(left_edge + i * (button_w + BUTTON_GAP), 20, button_w, button_h)
             for i in range(len(GEARS))
-        ]  # 依序往右排出 3 個按鈕的矩形範圍
+        ]  # 依序往右排出 4 個按鈕的矩形範圍
         self.current_gear = DEFAULT_GEAR  # 預設選中的檔位
 
     def current_speed(self):

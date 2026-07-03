@@ -78,7 +78,7 @@ class LapTimer:
                 run_best = min(self._laps)
             except TypeError:
                 run_best = None  # Q6 未完成時 _laps 可能含非數字
-            if run_best is not None and (self.best_lap is None or run_best < self.best_lap):
+            if run_best is not None and isinstance(run_best, (int, float)) and (self.best_lap is None or run_best < self.best_lap):
                 self.best_lap = run_best
 
         self.is_running = False

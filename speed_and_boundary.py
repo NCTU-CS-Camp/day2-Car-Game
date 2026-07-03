@@ -14,7 +14,7 @@ TOP_RIGHT_MARGIN = 20
 MESSAGE_FRAMES = 30  # "Crashed!" 訊息要停留幾個 frame
 
 
-def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
+def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle, timer=None):
     """
     --------------------------------------------------------
     #### 功能 : 檢查車子是否撞到賽道邊界，撞到的話重置分數/進度跟車子位置

@@ -130,7 +130,7 @@ def run():
         checkpoints_before = list(state.checkpoints_passed)
         car_before = (car.x, car.y, car.angle, car.velocity, car.acceleration)
         timer_before = (lap_timer.is_running, lap_timer._lap_start, list(lap_timer._laps))
-        handle_boundary(car, img_track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE)  # Q7:撞到邊界處理
+        handle_boundary(car, img_track_back, state, SPAWN_X, SPAWN_Y, SPAWN_ANGLE, lap_timer)  # Q7:撞到邊界處理
         if not isinstance(state.score, int) or not isinstance(state.checkpoints_passed, list):
             state.score = score_before
             state.checkpoints_passed = checkpoints_before

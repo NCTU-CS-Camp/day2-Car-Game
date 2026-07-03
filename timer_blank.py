@@ -5,7 +5,7 @@
 import pygame
 
 
-def _fmt(seconds: float) -> str:
+def _fmt(seconds):
     """把秒數格式化成 M:SS.mmm 或 S.mmm 字串。"""
     minutes = int(seconds // 60)
     secs = seconds % 60
@@ -22,13 +22,13 @@ class LapTimer:
         lap()  →  lap() × N  →  reset()  →  lap() ...
     """
 
-    def __init__(self) -> None:
-        self.is_running: bool = False
-        self.best_lap: float | None = None   # 歷史最快圈，reset 也不清
-        self._lap_start: int | None = None   # 本圈起始 ticks
-        self._laps: list[float] = []         # 本次跑的各圈時間
+    def __init__(self):
+        self.is_running = False
+        self.best_lap = None   # 歷史最快圈，reset 也不清
+        self._lap_start = None   # 本圈起始 ticks
+        self._laps = []         # 本次跑的各圈時間
 
-    def lap(self) -> float | None:
+    def lap(self):
         """
         --------------------------------------------------------
         #### 功能 : 按下計時鍵時呼叫，啟動碼表 / 記錄圈速 共用同一個按鍵
@@ -67,7 +67,7 @@ class LapTimer:
         return lap_time              # 回傳這圈的秒數
         # Q6 end
 
-    def reset(self) -> None:
+    def reset(self):
         """
         撞牆時呼叫。
         - 從本次所有圈中取最快的更新 best_lap
@@ -87,22 +87,22 @@ class LapTimer:
 
     # ── 顯示用 ────────────────────────────────────────────
 
-    def current_lap_seconds(self) -> float:
+    def current_lap_seconds(self):
         """目前這圈已跑幾秒。idle 時回傳 0。"""
         if not self.is_running or self._lap_start is None:
             return 0.0
         return (pygame.time.get_ticks() - self._lap_start) / 1000.0
 
-    def current_lap_str(self) -> str:
+    def current_lap_str(self):
         if not self.is_running:
             return "Press key..."
         return _fmt(self.current_lap_seconds())
 
-    def best_lap_str(self) -> str:
+    def best_lap_str(self):
         if self.best_lap is None:
             return "--"
         return _fmt(self.best_lap)
 
     @property
-    def laps(self) -> list[float]:
+    def laps(self):
         return list(self._laps)

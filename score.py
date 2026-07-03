@@ -91,7 +91,7 @@ def update_lap_progress(car, state):
         1. 顯示 checkpoint 的位置，方便測試
         2. 分別判斷車車通過3個檢查點的情況，並依照順序將其設為已通過
     Hint : 
-        1. show_checkpoints 可以控制是否要畫出 checkpoint
+        1. state.show_checkpoints 可以控制是否要畫出 checkpoint
         2. state.checkpoints_passed[0] 表示 CP1 是否已通過
     --------------------------------------------------------
     """
@@ -105,7 +105,7 @@ def update_lap_progress(car, state):
         "__fill_in__"
     # Q4-1 end
 
-    enable_Q4_3 = True  # 如果你想 ... 的部分，請把這個變數改成 True
+    enable_Q4_3 = False  # 如果你想 ... 的部分，請把這個變數改成 True
 
     if not enable_Q4_3:
         """
@@ -119,11 +119,10 @@ def update_lap_progress(car, state):
         """
         # Q4-2 begin
         if on_finish_line:
-            state.score += 1
+            "__fill_in__"
             state.message = "+1 Lap!"
             state.message_timer = MESSAGE_FRAMES
-            for i in range(3):
-                state.checkpoints_passed[i] = False
+            # TODO : 將三個檢查點重設為尚未通過
 
         # Q4-2 end
 

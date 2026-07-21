@@ -14,7 +14,7 @@ TOP_RIGHT_MARGIN = 20
 MESSAGE_FRAMES = 30  # "Crashed!" 訊息要停留幾個 frame
 
 
-def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
+def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle, timer):
     """
     --------------------------------------------------------
     #### 功能 : 檢查車子是否撞到賽道邊界，撞到的話重置分數/進度跟車子位置
@@ -24,6 +24,7 @@ def handle_boundary(car, track_back, state, spawn_x, spawn_y, spawn_angle):
     - track_back : 賽道碰撞用的底圖
     - state : GameState 物件(記錄 score / checkpoints_passed / message / message_timer)
     - spawn_x, spawn_y, spawn_angle : 車子重生時的座標跟角度
+    - timer : 撞牆時要重置的碼表
     --------------------------------------------------------
     #### 回傳值
     - 無(直接修改 state 跟 car)
